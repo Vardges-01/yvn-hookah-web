@@ -1,0 +1,61 @@
+name: Development Publish Website to CPanel
+on:
+  push:
+    branches:
+     - main
+  workflow_dispatch:
+
+jobs:
+    build:
+      name: Build ⛏
+      runs-on: ubuntu-latest
+      steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+        
+      - name: 🔨 Build Project
+        run: |
+          npm install
+          npm run build
+      - name: Archive production artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build
+
+    deploy:
+      name: Deploy 🚀
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with: 
+          name: build
+          path: build
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: build/
+      - name: 📢 Send TG message on push
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TG_CHAT_ID }}
+          token: ${{ secrets.TG_TOKEN }}
+          message: |
+            ${{ github.actor }} deployed a PRODUCTION:
+            Commit message: ${{ github.event.commits[0].message }}
+            
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
