@@ -1,1 +1,1 @@
-export const API_URL = 'http://localhost:3004'
+export const API_URL = 'https://yvn-hookah-api-development.up.railway.app/'
