@@ -1,5 +1,3 @@
-import React from "react";
-
 const TikTok = ({ color = "#000000" }) => {
     return (
         <svg
