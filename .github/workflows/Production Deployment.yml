@@ -20,7 +20,7 @@ jobs:
         
       - name: 🔨 Build Project
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build
       - name: Archive production artifact
         uses: actions/upload-artifact@v3
