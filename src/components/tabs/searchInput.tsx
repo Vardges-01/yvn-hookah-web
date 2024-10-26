@@ -14,17 +14,15 @@ function SearchInput() {
                         </InputAdornment>
                     ),
                     style: {
-                        borderRadius: '29.5px',
+                        borderRadius: '46px',
                         color: '#2EB3CF',
                         borderColor: '#2EB3CF',
-                    },
-                    classes: {
-                        notchedOutline: 'custom-notchedOutline',
                     },
                 }}
                 sx={{
                     '& .MuiOutlinedInput-root': {
                         '& fieldset': {
+                            border: 2,
                             borderColor: '#2EB3CF',
                         },
                         '&:hover fieldset': {
@@ -35,7 +33,7 @@ function SearchInput() {
                         },
                     },
                     input: {
-                        color: '#fff',
+                        color: 'white',
                     },
                     width: '90%',
                 }}

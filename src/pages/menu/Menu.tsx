@@ -2,11 +2,11 @@ import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import CategoryTabs from "../../components/tabs/categoryTabs";
 import SubCategoryTabs from "../../components/tabs/subCategoryTabs";
-// import MenuList from "../../components/menu/menuList";
-// import axios from "axios";
+import axios from "axios";
 import { dbData } from "../../constants/dbData";
 import SearchInput from "../../components/tabs/searchInput";
-// import { API_URL } from "../../config/api"
+import MenuList from "../../components/menu/menuList";
+import { API_URL } from "../../config/api"
 
 export const Menu = () => {
 
@@ -21,18 +21,15 @@ export const Menu = () => {
     const [subCategoryTabValue, setSubCategoryValue] = useState(0);
     const [menuItems, setMenuItems] = useState([]);
     const [dataItems, setDataItems] = useState({});
-    const [isClick, setIsClick] = useState(false);
+    // const [isClick, setIsClick] = useState(false);
 
     const handleChangeTabCategory = (_event, newValue) => {
-        console.log(_event, newValue)
         setCategoryTabValue(newValue);
-        setIsClick(true)
+        // setIsClick(true)
         setSubCategoryValue(0);
+        const tabValue = subCategories[Object.keys(subCategories)[newValue]]
         if (Object.keys(dataItems).length) {
-            console.log(categories)
-            console.log(subCategories)
-            console.log(subCategories[categories[newValue]])
-            const subName = subCategories[newValue][subCategoryTabValue]
+            const subName = tabValue[subCategoryTabValue]
             const items = dataItems[subName] || []
             setMenuItems(items)
         }
@@ -40,7 +37,7 @@ export const Menu = () => {
     };
 
     const handleChangeTabSubCategory = (_event, newValue) => {
-        setIsClick(false)
+        // setIsClick(false)
         setSubCategoryValue(newValue);
         if (Object.keys(dataItems).length) {
             const subName = subCategories[categories[categoryTabValue]][newValue]
@@ -55,8 +52,8 @@ export const Menu = () => {
                 let response: any = {}
                 console.log(process.env.NODE_ENV)
                 if (!(process.env.NODE_ENV == "development")) {
-                    // response = await axios.get(API_URL + '/menu');
-                    response = dbData
+                    response = await axios.get(API_URL + '/menu');
+                    // response = dbData
                 }
                 else {
                     response = dbData
@@ -64,7 +61,6 @@ export const Menu = () => {
                 const data = response.data
 
                 if (data && Object.keys(data).length) {
-                    console.log(data)
                     const categoryNames = Object.keys(data)
 
                     setCategories(categoryNames)
@@ -81,11 +77,7 @@ export const Menu = () => {
 
                         return category
                     })
-
                     setSubCategories(tmpSub)
-                    console.log("AAAAAAAAAAAAAAAAAAAAA")
-                    console.log(tmpSub)
-                    console.log("AAAAAAAAAAAAAAAAAAAAA")
                     setDataItems(tmpItems)
                     const subName = tmpSub[categoryNames[0]][0]
                     const items = tmpItems[subName] || []
@@ -104,12 +96,14 @@ export const Menu = () => {
 
     return (
         (!loading && categories) && <Box>
-             <Box sx={{
-                    py: 1,
-                    height: 'auto',
-                    // backgroundColor: 'rgba(19,19,19,0.9)',
-                }}>
-                    <SearchInput/>
+            <Box sx={{
+                py: 1,
+                height: 'auto',
+                // backgroundColor: 'rgba(19,19,19,0.9)',
+            }}>
+                <SearchInput />
+                <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                    sx={{ width: '100%' }}>
                     <CategoryTabs
                         categories={categories}
                         tabValue={categoryTabValue}
@@ -121,6 +115,8 @@ export const Menu = () => {
                         handleChange={handleChangeTabSubCategory}
                     />
                 </Box>
+                <MenuList menuItems={menuItems}></MenuList>
+            </Box>
         </Box>
     );
 

@@ -3,20 +3,22 @@ import { Tab, Tabs } from "@mui/material";
 const CategoryTabs = ({ categories, tabValue, handleChange }) => {
     return (
         <Tabs
-            // indicatorColor='none'
             textColor="primary"
             value={tabValue}
             onChange={handleChange}
             sx={{
-                px: 0.5,
+                marginLeft: 3,
+                display: 'flex',
+                justifyContent: 'space-around',
+                width: '90%'
             }}
-            >
+        >
             {categories.length && categories.map((category, index) => (
                 <Tab key={index} label={category}
                     sx={{
-                        textTransform:'none',
+                        textTransform: 'none',
                         color: 'white',
-                        fontSize:'20px',
+                        fontSize: '20px',
                         fontWeight: 'bold',
                         mx: 0.5
                     }} />

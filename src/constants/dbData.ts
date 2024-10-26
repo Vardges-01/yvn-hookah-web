@@ -118,7 +118,13 @@ export const dbData = {
                     "imageUrl": null,
                     "rating": 5
                 }
-            ]
+            ],
+            "Pizza2": [{}],
+            "Pasta2": [{}],
+            "Burger2": [{}],
+            "Pizza3": [{}],
+            "Pasta3": [{}],
+            "Burger3": [{}]
         },
         "Bar": {
             "Coffee": [
