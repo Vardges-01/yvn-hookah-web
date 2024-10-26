@@ -46,7 +46,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: build/
+          local-dir: dist/
       - name: 📢 Send TG message on push
         uses: appleboy/telegram-action@master
         with:
