@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { Box, Button, Tabs } from "@mui/material";
 
 const SubCategoryTabs = ({ subCategories, tabValue, handleChange }) => {
-    const [selectedTab, setSelectedTab] = useState(0);
+    const [selectedTab, setSelectedTab] = useState(tabValue);
 
-    // Set the default tab as the first element
     useEffect(() => {
         setSelectedTab(tabValue);
     }, [tabValue]);
@@ -19,39 +18,38 @@ const SubCategoryTabs = ({ subCategories, tabValue, handleChange }) => {
             <Tabs
                 value={selectedTab}
                 variant="scrollable"
-                scrollButtons
-                allowScrollButtonsMobile
                 sx={{
+                    ml: 3,
                     pt: 1,
                     '& .MuiTabs-indicator': {
-                        display: 'none', // Hide the indicator
+                        display: 'none',
                     },
                 }}
             >
                 {subCategories.map((subCategory, index) => (
-                    <Button
+                    <Box
                         key={index}
-                        onClick={(ev) => handleTabClick(ev, index)}
                         sx={{
-                            ':focus': {
-                                backgroundColor: '#2c2c2c',
-                                color: '#007bff',
-                                fontSize: '18px',
-                            },
-                            textTransform: 'none',
-                            color: selectedTab === index ? '#007bff' : 'white',
-                            fontFamily: 'Inter',
-                            fontSize: selectedTab === index ? '18px' : '16px',
-                            fontWeight: 'bold',
-                            m: 0.5,
-                            borderRadius: '25px',
                             backgroundColor: '#2c2c2c',
-                            padding: 0,
-                            px: 0.8,
+                            borderRadius: '25px',
+                            mx: 0.3,
                         }}
                     >
-                        {subCategory}
-                    </Button>
+                        <Button
+                            onClick={(ev) => handleTabClick(ev, index)}
+                            sx={{
+                                textTransform: 'none',
+                                color: selectedTab === index ? '#007bff' : 'white',
+                                fontFamily: 'Inter',
+                                fontSize: selectedTab === index ? '18px' : '16px',
+                                fontWeight: 'bold',
+                                px: 0.8,
+                                py: 0,
+                            }}
+                        >
+                            {subCategory}
+                        </Button>
+                    </Box>
                 ))}
             </Tabs>
         </Box>

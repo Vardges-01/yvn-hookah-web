@@ -51,7 +51,7 @@ export const Menu = () => {
             try {
                 let response: any = {}
                 console.log(process.env.NODE_ENV)
-                if (!(process.env.NODE_ENV == "development")) {
+                if ((process.env.NODE_ENV == "development")) {
                     response = await axios.get(API_URL + '/menu');
                     // response = dbData
                 }

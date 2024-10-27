@@ -6,7 +6,7 @@ import MainAppBar from '../appBars/appBar';
 const Header = () => {
 
     return (
-        <AppBar sx={{backgroundColor: 'rgba(19,19,19,0.9)', width: '100%'}} position='static'>
+        <AppBar sx={{backgroundColor: 'rgba(19,19,19,0.9)', width: '100%'}} position='fixed'>
             <Toolbar>
                 <MobileAppBar/>
                 <MainAppBar/>
