@@ -1,1 +1,1 @@
-export const API_URL = 'https://yvn-hookah-api-development.up.railway.app/'
+export const API_URL = 'https://yvn-hookah-api-development.up.railway.app'
