@@ -127,7 +127,7 @@ const MenuNewItemCard = ({ item }) => {
                 background: 'none',
                 position: 'relative',
                 width: '100%',
-                height: '170px',
+                height: '100%',
                 display: 'flex',
                 justifyContent: 'center'
             }}>
@@ -142,8 +142,8 @@ const MenuNewItemCard = ({ item }) => {
                 justifyContent: 'end',
                 alignItems: 'center',
                 textAlign: 'center',
-                width: '217px',
-                height: '250px',
+                width: '170px',
+                height: '200px',
                 pb: 1
             }}>
                 <Rating
@@ -151,7 +151,6 @@ const MenuNewItemCard = ({ item }) => {
                     name="simple-controlled"
                     value={ratingValue}
                     onChange={(_event, newValue) => {
-
                         setRatingValue(newValue);
                         setOpenSnackbar(true)
                     }}
@@ -171,8 +170,8 @@ const MenuNewItemCard = ({ item }) => {
                         border: 1,
                         margin: 10
                     }}
-                    height={140}
-                    width={140}
+                    height={120}
+                    width={120}
                     src={imageUrl ? 'https://dev.yvnhookah.am' + imageUrl : 'https://dev.yvnhookah.am/default.jpg'}
                     alt={name}
                 />

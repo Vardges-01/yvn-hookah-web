@@ -95,8 +95,8 @@ const MobileAppBar = () => {
                      <img
                         src="/yvn-logo.png"
                         alt=""
-                        width='162'
-                        height='91'
+                        width='135'
+                        height='60'
                     />
                 </IconButton>
             </Box>

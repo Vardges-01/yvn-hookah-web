@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Header />
         <Divider />
-        <Box pt={11} flexGrow={1}>{children}</Box>
+        <Box pt={7} flexGrow={1}>{children}</Box>
         {/* <Footer /> */}
       </Box>
 
