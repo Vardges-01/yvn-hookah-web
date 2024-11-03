@@ -7,6 +7,7 @@ import { dbData } from "../../constants/dbData";
 import SearchInput from "../../components/tabs/searchInput";
 import MenuList from "../../components/menu/menuList";
 import { API_URL } from "../../config/api"
+import AutoScrollCarousel from "../../components/tabs/autoScrollCarousel";
 
 export const Menu = () => {
 
@@ -101,6 +102,7 @@ export const Menu = () => {
                 height: 'auto',
                 // backgroundColor: 'rgba(19,19,19,0.9)',
             }}>
+                <AutoScrollCarousel/>
                 <SearchInput />
                 <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}
                     sx={{ width: '100%' }}>
