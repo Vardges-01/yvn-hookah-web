@@ -4,10 +4,10 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const images = [
-    'https://via.placeholder.com/600x200?text=AKCIA+1',
-    'https://via.placeholder.com/600x200?text=AKCIA+2',
-    'https://via.placeholder.com/600x200?text=AKCIA+3',
-    'https://via.placeholder.com/600x200?text=AKCIA+4',
+    'https://via.placeholder.com/3200x800?text=AKCIA+1',
+    'https://via.placeholder.com/3200x800?text=AKCIA+2',
+    'https://via.placeholder.com/3200x800?text=AKCIA+3',
+    'https://via.placeholder.com/3200x800?text=AKCIA+4',
 ];
 
 const AutoScrollCarousel = () => {
@@ -17,7 +17,7 @@ const AutoScrollCarousel = () => {
     const startInterval = () => {
         intervalRef.current = setInterval(() => {
             setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 3000);
+        }, 5000);
     };
 
     useEffect(() => {
@@ -42,15 +42,15 @@ const AutoScrollCarousel = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative', width: '100%', overflow: 'hidden' }}>
-            <Box sx={{ width: '100%', display: 'flex', transition: 'transform 2s ease', transform: `translate3d(-${currentIndex * 100}%, 0px, 0px)` }}>
-                {images.map((image, index) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative', width: '100%', height:'100px', overflow: 'hidden' }}>
+            <Box sx={{ width: '100%', height:'100%', display: 'flex', transition: 'transform 2s ease', transform: `translate3d(-${currentIndex * 100}%, 0px, 0px)` }}>
+                {images.map((_image, index) => (
                     <Box
                         key={index}
                         component="img"
-                        src={image}
+                        src={'/Akcia.png'}
                         alt={`Slide ${index + 1}`}
-                        sx={{ width: '90%', mx: '5%', borderRadius: 5 }}
+                        sx={{ width: '90%', height:'100%', mx: '5%', borderRadius: 5 }}
                     />
                 ))}
             </Box>
