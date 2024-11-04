@@ -80,22 +80,10 @@ const MobileAppBar = () => {
             </Box>
             <Box flexGrow={1} >
                 <IconButton onClick={() => { navigate('/') }} color='inherit' aria-label='logo' sx={{ display: 'flex', flexDirection: 'row', gap: '10px', }}>
-                    {/* <img
-                        src="/yvn-hookah-logo.png"
-                        alt=""
-                        width='56'
-                        height='56'
-                    />
-                    <img
-                        src="/yvn-name.png"
-                        alt=""
-                        width='112'
-                        height='48'
-                    /> */}
                      <img
-                        src="/yvn-logo.png"
+                        src="/yvn-logo.svg"
                         alt=""
-                        width='135'
+                        width='160'
                         height='60'
                     />
                 </IconButton>

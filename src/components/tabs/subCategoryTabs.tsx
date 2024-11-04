@@ -20,7 +20,7 @@ const SubCategoryTabs = ({ subCategories, tabValue, handleChange }) => {
                 variant="scrollable"
                 sx={{
                     ml: 3,
-                    pt: 1,
+                    pt: 1.5,
                     '& .MuiTabs-indicator': {
                         display: 'none',
                     },

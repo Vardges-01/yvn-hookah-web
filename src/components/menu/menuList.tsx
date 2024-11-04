@@ -7,7 +7,6 @@ const MenuList = ({ menuItems }) => {
             <Grid 
                 container 
                 direction="row" 
-                // wrap="nowrap"  // Prevents wrapping to keep items in a single row
                 spacing={1}
                 height={'100%'}
                 sx={{ justifyContent: 'center' }}

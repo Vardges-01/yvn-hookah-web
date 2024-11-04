@@ -4,10 +4,10 @@ import CategoryTabs from "../../components/tabs/categoryTabs";
 import SubCategoryTabs from "../../components/tabs/subCategoryTabs";
 import axios from "axios";
 import { dbData } from "../../constants/dbData";
-import SearchInput from "../../components/tabs/searchInput";
+// import SearchInput from "../../components/menu/searchInput";
 import MenuList from "../../components/menu/menuList";
 import { API_URL } from "../../config/api"
-import AutoScrollCarousel from "../../components/tabs/autoScrollCarousel";
+import AutoScrollCarousel from "../../components/menu/autoScrollCarousel";
 
 export const Menu = () => {
 
@@ -22,11 +22,9 @@ export const Menu = () => {
     const [subCategoryTabValue, setSubCategoryValue] = useState(0);
     const [menuItems, setMenuItems] = useState([]);
     const [dataItems, setDataItems] = useState({});
-    // const [isClick, setIsClick] = useState(false);
 
     const handleChangeTabCategory = (_event, newValue) => {
         setCategoryTabValue(newValue);
-        // setIsClick(true)
         setSubCategoryValue(0);
         const tabValue = subCategories[Object.keys(subCategories)[newValue]]
         if (Object.keys(dataItems).length) {
@@ -38,7 +36,6 @@ export const Menu = () => {
     };
 
     const handleChangeTabSubCategory = (_event, newValue) => {
-        // setIsClick(false)
         setSubCategoryValue(newValue);
         if (Object.keys(dataItems).length) {
             const subName = subCategories[categories[categoryTabValue]][newValue]
@@ -54,7 +51,6 @@ export const Menu = () => {
                 console.log(process.env.NODE_ENV)
                 if (!(process.env.NODE_ENV == "development")) {
                     response = await axios.get(API_URL + '/menu');
-                    // response = dbData
                 }
                 else {
                     response = dbData
@@ -100,11 +96,10 @@ export const Menu = () => {
             <Box sx={{
                 py: 1,
                 height: 'auto',
-                // backgroundColor: 'rgba(19,19,19,0.9)',
             }}>
                 <AutoScrollCarousel/>
-                <SearchInput />
-                <Box display={'flex'} justifyContent={'center'} flexDirection={'column'}
+                {/* <SearchInput /> */}
+                <Box pt={3} display={'flex'} justifyContent={'center'} flexDirection={'column'}
                     sx={{ width: '100%' }}>
                     <CategoryTabs
                         categories={categories}

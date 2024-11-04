@@ -42,7 +42,7 @@ const AutoScrollCarousel = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative', width: '100%', height:'100px', overflow: 'hidden' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative', width: '100%', height:'110px', overflow: 'hidden' }}>
             <Box sx={{ width: '100%', height:'100%', display: 'flex', transition: 'transform 2s ease', transform: `translate3d(-${currentIndex * 100}%, 0px, 0px)` }}>
                 {images.map((_image, index) => (
                     <Box
