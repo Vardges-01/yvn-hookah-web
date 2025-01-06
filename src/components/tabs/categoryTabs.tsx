@@ -1,29 +1,25 @@
-import { Tab, Tabs } from "@mui/material";
+import { Box, Tab, Tabs } from "@mui/material";
 
 const CategoryTabs = ({ categories, tabValue, handleChange }) => {
     return (
-        <Tabs
-            textColor="primary"
-            value={tabValue}
-            onChange={handleChange}
-            sx={{
-                marginLeft: 3,
-                display: 'flex',
-                justifyContent: 'space-around',
-                width: '90%'
-            }}
-        >
-            {categories.length && categories.map((category, index) => (
-                <Tab key={index} label={category}
-                    sx={{
-                        textTransform: 'none',
-                        color: 'white',
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        mx: 0.5
-                    }} />
-            ))}
-        </Tabs>
+        <Box display="flex" justifyContent="center" sx={{ width: '100%' }}>
+            <Tabs
+                textColor="primary"
+                value={tabValue}
+                onChange={handleChange}
+            >
+                {categories.length && categories.map((category, index) => (
+                    <Tab key={index} label={category}
+                        sx={{
+                            textTransform: 'none',
+                            color: 'white',
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            mx: 0.5
+                        }} />
+                ))}
+            </Tabs>
+        </Box>
     )
 }
 

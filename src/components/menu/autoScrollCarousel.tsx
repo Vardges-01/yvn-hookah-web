@@ -1,69 +1,115 @@
-import { useEffect, useState, useRef } from 'react';
-import { Box, IconButton } from '@mui/material';
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { useState, useEffect } from 'react';
+import { Box, IconButton, Typography, useTheme, useMediaQuery } from '@mui/material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 
-const images = [
-    'https://via.placeholder.com/3200x800?text=AKCIA+1',
-    'https://via.placeholder.com/3200x800?text=AKCIA+2',
-    'https://via.placeholder.com/3200x800?text=AKCIA+3',
-    'https://via.placeholder.com/3200x800?text=AKCIA+4',
+const offers = [
+  { 
+    id: 1, 
+    name: 'Happy Hour 20% OFF on All Drinks 5-7PM',
+    image: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&h=200&q=80'
+  },
+  { 
+    id: 2, 
+    name: 'Business Lunch Set Menu 2500₸',
+    image: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=600&h=200&q=80'
+  },
+  { 
+    id: 3, 
+    name: 'Weekend Special: Free Dessert with Main Course',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=600&h=200&q=80'
+  },
+  { 
+    id: 4, 
+    name: 'Family Sunday: Kids Eat Free',
+    image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&h=200&q=80'
+  }
 ];
 
-const AutoScrollCarousel = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const intervalRef = useRef(null);
+const SpecialOffers = () => {
+  const [currentOffer, setCurrentOffer] = useState(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const startInterval = () => {
-        intervalRef.current = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        }, 5000);
-    };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentOffer((prev) => (prev + 1) % offers.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-    useEffect(() => {
-        startInterval(); // Start the interval when the component mounts
+  const nextOffer = () => {
+    setCurrentOffer((prev) => (prev + 1) % offers.length);
+  };
 
-        return () => clearInterval(intervalRef.current); // Cleanup interval on unmount
-    }, []);
+  const prevOffer = () => {
+    setCurrentOffer((prev) => (prev - 1 + offers.length) % offers.length);
+  };
 
-    const resetInterval = () => {
-        clearInterval(intervalRef.current); // Clear the existing interval
-        startInterval(); // Start a new interval
-    };
-
-    const handleNext = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-        resetInterval(); // Reset the interval on manual navigation
-    };
-
-    const handlePrev = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-        resetInterval(); // Reset the interval on manual navigation
-    };
-
-    return (
-        <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative', width: '100%', height:'110px', overflow: 'hidden' }}>
-            <Box sx={{ width: '100%', height:'100%', display: 'flex', transition: 'transform 2s ease', transform: `translate3d(-${currentIndex * 100}%, 0px, 0px)` }}>
-                {images.map((_image, index) => (
-                    <Box
-                        key={index}
-                        component="img"
-                        src={'/Akcia.png'}
-                        alt={`Slide ${index + 1}`}
-                        sx={{ width: '90%', height:'100%', mx: '5%', borderRadius: 5 }}
-                    />
-                ))}
-            </Box>
-            
-            <IconButton onClick={handlePrev} sx={{ position: 'absolute', left: 15, color:'#007bff' }}>
-                <NavigateBeforeIcon />
-            </IconButton>
-
-            <IconButton onClick={handleNext} sx={{ position: 'absolute', right: 15, color:'#007bff'}}>
-                <NavigateNextIcon />
-            </IconButton>
+  return (
+    <Box
+      sx={{
+        // position: 'relative',
+        bgcolor: 'grey.900',
+        borderRadius: 2,
+        overflow: 'hidden',
+        mb: 2,
+        height: isMobile ? 150 : 200
+      }}
+    >
+      <Box
+        sx={{
+          position: 'relative',
+          height: '100%',
+          '& img': {
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: 0.5
+          }
+        }}
+      >
+        <img 
+          src={offers[currentOffer].image} 
+          alt={offers[currentOffer].name}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 2
+          }}
+        >
+          <IconButton 
+            onClick={prevOffer}
+            sx={{ color: 'white', '&:hover': { color: 'cyan' } }}
+          >
+            <ChevronLeft />
+          </IconButton>
+          <Typography
+            variant={isMobile ? "body1" : "h6"}
+            sx={{
+              color: 'white',
+              textAlign: 'center',
+              px: 2,
+              fontWeight: 500,
+              maxWidth: '80%'
+            }}
+          >
+            {offers[currentOffer].name}
+          </Typography>
+          <IconButton 
+            onClick={nextOffer}
+            sx={{ color: 'white', '&:hover': { color: 'cyan' } }}
+          >
+            <ChevronRight />
+          </IconButton>
         </Box>
-    );
-};
+      </Box>
+    </Box>
+  );
+}
 
-export default AutoScrollCarousel;
+export default SpecialOffers;

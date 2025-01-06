@@ -14,7 +14,7 @@ const SubCategoryTabs = ({ subCategories, tabValue, handleChange }) => {
     };
 
     return (
-        <Box display="flex" justifyContent="start">
+        <Box display="flex" justifyContent="center" sx={{width:'100%'}}>
             <Tabs
                 value={selectedTab}
                 variant="scrollable"
@@ -41,9 +41,9 @@ const SubCategoryTabs = ({ subCategories, tabValue, handleChange }) => {
                                 textTransform: 'none',
                                 color: selectedTab === index ? '#007bff' : 'white',
                                 fontFamily: 'Inter',
-                                fontSize: selectedTab === index ? '18px' : '16px',
+                                fontSize: selectedTab === index ? '20px' : '18px',
                                 fontWeight: 'bold',
-                                px: 0.8,
+                                px: 2,
                                 py: 0,
                             }}
                         >

@@ -158,7 +158,7 @@ const MenuNewItemCard = ({ item }) => {
                 />
                 <Typography fontWeight={'bold'} fontSize={'22px'} width={'100%'} sx={{
                     whiteSpace: 'nowrap',
-                    overflow: 'scroll',
+                    overflow: 'auto',
                 }}>{name}</Typography>
                 <Typography fontWeight={'bold'} fontSize={"20px"} color={'#2EB3CF'}>{price + '֏'}</Typography>
             </Box>
