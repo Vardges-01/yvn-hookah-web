@@ -1,17 +1,18 @@
-import { Box, Divider } from '@mui/material'
+import { Box, Divider } from "@mui/material";
 import Header from "../header/Header";
 // import Footer from "../header/Footer";
 
 const Layout = ({ children }) => {
   return (
     <>
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <Box
+        sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
         <Header />
         <Divider />
-        <Box pt={9} flexGrow={1}>{children}</Box>
+        <Box flexGrow={1}>{children}</Box>
         {/* <Footer /> */}
       </Box>
-
     </>
   );
 };
