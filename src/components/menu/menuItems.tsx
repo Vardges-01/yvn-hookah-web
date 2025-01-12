@@ -254,7 +254,7 @@ const MenuItemCard3 = ({ item, isFavorite, onToggleFavorite }) => {
             {item.name}
           </h3>
           <p className="text-blue-400 font-semibold text-base md:text-lg">
-            {item.price}
+            {item.price} ֏
           </p>
         </div>
         <Snackbar
