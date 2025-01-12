@@ -54,7 +54,7 @@ export const Menu = () => {
   };
 
   const fetchMenuItems = async () => {
-    const { data } = await supabase.from('menu_items').select('*');
+    const { data } = await supabase.from('menu_items').select('*').order('position');
 
     setMenuItems(data || []);
   };
@@ -68,7 +68,7 @@ export const Menu = () => {
   });
 
   return (
-      <Box>
+    <Box>
         <AutoScrollCarousel />
         <Box
           sx={{
