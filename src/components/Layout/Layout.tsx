@@ -1,5 +1,7 @@
 import { Box, Divider } from "@mui/material";
-import Header from "../header/Header";
+// import Header from "../header/Header";
+import Navbar from "../appBars/navbar";
+import { Toaster } from "react-hot-toast";
 // import Footer from "../header/Footer";
 
 const Layout = ({ children }) => {
@@ -8,7 +10,9 @@ const Layout = ({ children }) => {
       <Box
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
-        <Header />
+        <Toaster position="top-right" />
+
+        <Navbar />
         <Divider />
         <Box flexGrow={1}>{children}</Box>
         {/* <Footer /> */}

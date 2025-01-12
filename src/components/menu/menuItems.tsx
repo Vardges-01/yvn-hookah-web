@@ -212,65 +212,67 @@ import { FaHeart } from "react-icons/fa";
 // };
 
 const MenuItemCard3 = ({ item, isFavorite, onToggleFavorite }) => {
-  const { name, imageUrl, price, rating } = item;
+  const { rating } = item;
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [ratingValue, setRatingValue] = useState(rating || 4);
 
   return (
-    <>
-      <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-xl p-4 md:p-6 flex flex-col items-center transform hover:scale-105 transition-all hover:shadow-xl hover:shadow-blue-500/20 relative">
-        <button
-          onClick={() => onToggleFavorite(item.id)}
-          className="absolute top-4 right-4 text-xl"
+    item && (
+      <>
+        <div className="bg-gradient-to-b from-gray-800 to-gray-900 rounded-xl p-4 md:p-6 flex flex-col items-center transform hover:scale-105 transition-all hover:shadow-xl hover:shadow-blue-500/20 relative">
+          <button
+            onClick={() => onToggleFavorite(item.id)}
+            className="absolute top-4 right-4 text-xl"
+          >
+            <FaHeart className={isFavorite ? 'text-red-500' : 'text-gray-400'} />
+          </button>
+          {item.image ? (
+            <img
+              className="w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mb-4 md:mb-6 flex items-center justify-center text-3xl md:text-4xl shadow-lg"
+              src={item.image}
+            />
+          ) : (
+            <div className="w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mb-4 md:mb-6 flex items-center justify-center text-3xl md:text-4xl shadow-lg">
+              🍕
+            </div>
+          )}
+
+          <div className="flex mb-2 md:mb-3 text-yellow-400">
+            <Rating
+              sx={{ color: "#ffca28", py: 1, pt: 1 }}
+              name="rate"
+              value={ratingValue}
+              onChange={(_event, newValue) => {
+                setRatingValue(newValue);
+                setOpenSnackbar(true);
+              }}
+              size="medium"
+            />
+          </div>
+          <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-center">
+            {item.name}
+          </h3>
+          <p className="text-blue-400 font-semibold text-base md:text-lg">
+            {item.price}
+          </p>
+        </div>
+        <Snackbar
+          open={openSnackbar}
+          sx={{
+            width: "95%",
+            justifyContent: "right",
+          }}
+          autoHideDuration={4000}
+          onClose={() => {
+            setOpenSnackbar(false);
+          }}
         >
-          <FaHeart className={isFavorite ? "text-red-500" : "text-gray-400"} />
-        </button>
+          <Alert severity="success">{`Thanks for Rate :)`}</Alert>
+        </Snackbar>
+      </>
 
-        <div className="w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mb-4 md:mb-6 flex items-center justify-center text-3xl md:text-4xl shadow-lg">
-          <img
-            src={
-              imageUrl
-                ? "https://dev.yvnhookah.am" + imageUrl
-                : "https://dev.yvnhookah.am/default.jpg"
-            }
-          />
-        </div>
-
-        <div className="flex mb-2 md:mb-3 text-yellow-400">
-          <Rating
-            sx={{ color: "#ffca28", py: 1, pt: 1 }}
-            name="rate"
-            value={ratingValue}
-            onChange={(_event, newValue) => {
-              setRatingValue(newValue);
-              setOpenSnackbar(true);
-            }}
-            size="medium"
-          />
-        </div>
-
-        <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-center">
-          {name}
-        </h3>
-        <p className="text-blue-400 font-semibold text-base md:text-lg">
-          {price + " ֏"}
-        </p>
-      </div>
-      <Snackbar
-        open={openSnackbar}
-        sx={{
-          width: "95%",
-          justifyContent: "right",
-        }}
-        autoHideDuration={4000}
-        onClose={() => {
-          setOpenSnackbar(false);
-        }}
-      >
-        <Alert severity="success">{`Thanks for Rate :)`}</Alert>
-      </Snackbar>
-    </>
+    )
   );
 };
 

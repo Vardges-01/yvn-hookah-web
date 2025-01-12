@@ -47,7 +47,6 @@ const MenuList2 = ({ menuItems }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 p-4 md:p-6">
       {menuItems
-        //   .filter(item => item.category === activeCategory)
         .map((item) => (
           <MenuItemCard
             key={item.id}

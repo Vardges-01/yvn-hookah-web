@@ -70,7 +70,7 @@ export default function SpecialOffers() {
 
   return (
     <div
-      className={`relative w-full h-48 md:h-64 bg-gradient-to-r ${offers[currentSlide].bgColor} mb-8 overflow-hidden transition-all duration-500`}
+      className={`relative w-full h-48 md:h-64 bg-gradient-to-r ${offers[currentSlide].bgColor} mb-2 overflow-hidden transition-all duration-500`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

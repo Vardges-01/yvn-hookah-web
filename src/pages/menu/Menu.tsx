@@ -2,93 +2,72 @@ import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import CategoryTabs from "../../components/tabs/categoryTabs";
 import SubCategoryTabs from "../../components/tabs/subCategoryTabs";
-import axios from "axios";
-import { dbData } from "../../constants/dbData";
-// import SearchInput from "../../components/menu/searchInput";
 import MenuList from "../../components/menu/menuList";
-import { API_URL } from "../../config/api";
 import AutoScrollCarousel from "../../components/menu/autoScrollCarousel";
+import { supabase } from "../../lib/supabase";
 
 export const Menu = () => {
-  const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
+  // const [categories, setCategories] = useState(null);
+  const [subCategories, setSubCategories] = useState([]);
 
-  const [categories, setCategories] = useState(null);
-  const [subCategories, setSubCategories] = useState({});
-
-  const [categoryTabValue, setCategoryTabValue] = useState(0);
-  const [subCategoryTabValue, setSubCategoryValue] = useState(0);
+  const [categoryTabValue, setCategoryTabValue] = useState('Food');
+  const [subCategoryTabValue, setSubCategoryValue] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
-  const [dataItems, setDataItems] = useState({});
 
-  const handleChangeTabCategory = (_event, newValue) => {
+  const handleChangeTabCategory = (newValue) => {
     setCategoryTabValue(newValue);
-    setSubCategoryValue(0);
-    const tabValue = subCategories[Object.keys(subCategories)[newValue]];
-    if (Object.keys(dataItems).length) {
-      const subName = tabValue[subCategoryTabValue];
-      const items = dataItems[subName] || [];
-      setMenuItems(items);
+
+    const firstCategory = subCategories.find((cat) => cat.type === newValue);
+
+    if (firstCategory) {
+      setSubCategoryValue(firstCategory.id);
     }
   };
 
   const handleChangeTabSubCategory = (newValue) => {
     setSubCategoryValue(newValue);
-    if (Object.keys(dataItems).length) {
-      const subName = subCategories[categories[categoryTabValue]][newValue];
-      const items = dataItems[subName] || [];
-      setMenuItems(items);
-    }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        let response: any = {};
-        console.log(process.env.NODE_ENV);
-        if (!(process.env.NODE_ENV == "development")) {
-          response = await axios.get(API_URL + "/menu");
-        } else {
-          response = dbData;
-        }
-        const data = response.data;
-
-        if (data && Object.keys(data).length) {
-          const categoryNames = Object.keys(data);
-
-          setCategories(categoryNames);
-
-          let tmpSub = {};
-          let tmpItems = {};
-          categoryNames.map((category) => {
-            tmpSub[category] = Object.keys(data[category]);
-
-            tmpSub[category].map((subCategory) => {
-              tmpItems[subCategory] = data[category][subCategory];
-              return subCategory;
-            });
-
-            return category;
-          });
-          setSubCategories(tmpSub);
-          setDataItems(tmpItems);
-          const subName = tmpSub[categoryNames[0]][0];
-          const items = tmpItems[subName] || [];
-          setMenuItems(items);
-        }
-      } catch (error) {
-        // setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchCategories();
+    fetchMenuItems();
   }, []);
 
+  const fetchCategories = async () => {
+    const { data } = await supabase.from('categories').select('*');
+
+    const typeOrder = ['Food', 'Bar', 'Hookah'];
+
+    const filteredItems = data?.sort((a, b) => {
+      return typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type);
+    });
+
+    const sortedCategories = [...filteredItems].sort(
+      (a, b) => a.position - b.position
+    );
+
+    setSubCategories(sortedCategories || []);
+
+    if (sortedCategories && sortedCategories.length > 0 && !subCategoryTabValue) {
+      setSubCategoryValue(sortedCategories[0].id);
+    }
+  };
+
+  const fetchMenuItems = async () => {
+    const { data } = await supabase.from('menu_items').select('*');
+
+    setMenuItems(data || []);
+  };
+
+  const filteredCategories = subCategories.filter((cat) => cat.type === categoryTabValue);
+
+  const filteredMenuItems = menuItems.filter((item) => {
+    const matchesSubCategory =
+      item.category_id === subCategoryTabValue;
+    return matchesSubCategory;
+  });
+
   return (
-    !loading &&
-    categories && (
       <Box>
         <AutoScrollCarousel />
         <Box
@@ -97,28 +76,25 @@ export const Menu = () => {
             height: "auto",
           }}
         >
-          {/* <SearchInput /> */}
           <Box
-            pt={3}
             display={"flex"}
             justifyContent={"center"}
             flexDirection={"column"}
             sx={{ width: "100%" }}
           >
             <CategoryTabs
-              categories={categories}
+              categories={['Food','Bar','Hookah']}
               tabValue={categoryTabValue}
               handleChange={handleChangeTabCategory}
             />
             <SubCategoryTabs
-              subCategories={subCategories[categories[categoryTabValue]]}
+              subCategories={filteredCategories}
               tabValue={subCategoryTabValue}
               handleChange={handleChangeTabSubCategory}
             />
           </Box>
-          <MenuList menuItems={menuItems}></MenuList>
+          <MenuList menuItems={filteredMenuItems}></MenuList>
         </Box>
       </Box>
     )
-  );
 };
