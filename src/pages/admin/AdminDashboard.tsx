@@ -1,13 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Upload,
-  ChevronUp,
-  ChevronDown,
-  Search,
-} from 'lucide-react';
 import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import {
@@ -24,152 +15,15 @@ import {
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  useSortable,
 } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-
-interface Category {
-  id: string;
-  name: string;
-  type: 'Food' | 'Bar' | 'Hookah';
-  position: number;
-  created_at: string;
-}
-
-interface MenuItem {
-  id: string;
-  name: string;
-  price: number;
-  rating: number;
-  image: string;
-  category_id: string;
-  position: number;
-  created_at: string;
-  categories?: Category;
-}
-
-interface SortableCategoryProps {
-  category: Category;
-  onEdit: (category: Category) => void;
-  onDelete: (id: string) => void;
-}
-
-interface SortableMenuItemProps {
-  item: MenuItem;
-  categories: Category[];
-  onEdit: (item: MenuItem) => void;
-  onDelete: (id: string) => void;
-}
-
-function SortableCategory({ category, onEdit, onDelete }: SortableCategoryProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: category.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="bg-gray-800 p-4 rounded-lg flex items-center justify-between cursor-move"
-      {...attributes}
-      {...listeners}
-    >
-      <div>
-        <h3 className="font-semibold">{category.name}</h3>
-        <p className="text-sm text-gray-400">{category.type}</p>
-      </div>
-      <div className="flex gap-2">
-        <button
-          onClick={() => onEdit(category)}
-          className="text-blue-400 hover:text-blue-300"
-        >
-          <Pencil className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => onDelete(category.id)}
-          className="text-red-400 hover:text-red-300"
-        >
-          <Trash2 className="w-5 h-5" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function SortableMenuItem({
-  item,
-  onEdit,
-  onDelete,
-  categories,
-}: SortableMenuItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: item.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="bg-gray-800 p-4 rounded-lg cursor-move"
-      {...attributes}
-      {...listeners}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          {item.image ? (
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-16 h-16 object-cover rounded"
-            />
-          ) : (
-            <div className="w-16 h-16 bg-gray-700 rounded flex items-center justify-center">
-              <Upload className="w-6 h-6 text-gray-400" />
-            </div>
-          )}
-          <div>
-            <h3 className="font-semibold">{item.name}</h3>
-            <p className="text-sm text-gray-400">
-              {categories.find((c) => c.id === item.category_id)?.name} -{' '}
-              {item.price}₸
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => onEdit(item)}
-            className="text-blue-400 hover:text-blue-300"
-          >
-            <Pencil className="w-5 h-5" />
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation(); // Остановить конфликт событий
-              onDelete(item.id); // Вызвать обработчик
-            }}
-            // onClick={() => onDelete(item.id)}
-            className="text-red-400 hover:text-red-300"
-          >
-            <Trash2 className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { ShowHideList } from '../../components/admin/more/ShowHideList';
+import { AddCategoryForm } from '../../components/admin/forms/AddCategoryForm';
+import { SearchAndFilter } from '../../components/admin/more/SearchAndFilter';
+import { AddMenuItemForm } from '../../components/admin/forms/AddMenuItemForm';
+import { Category, MenuItem } from '../../components/admin/types/Menu.types';
+import { SortableCategory } from '../../components/admin/categorySection/SortableCategory';
+import { SortableMenuItem } from '../../components/admin/categorySection/SortableMenuItem';
+import { EditMenuItemForm } from '../../components/admin/forms/EditMenuItemForm';
 
 export default function AdminDashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -206,8 +60,8 @@ export default function AdminDashboard() {
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        delay: 200, // Задержка в миллисекундах
-        tolerance: 5, // Движение курсора до начала перетаскивания
+        delay: 200,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
@@ -290,7 +144,7 @@ export default function AdminDashboard() {
     if (!over || active.id === over.id) return;
 
     const categoryItems = menuItems.filter(item => item.category_id === categoryId);
-    
+
     const oldIndex = categoryItems.findIndex(item => item.id === active.id);
     const newIndex = categoryItems.findIndex(item => item.id === over.id);
     const updatedItems = arrayMove(categoryItems, oldIndex, newIndex);
@@ -543,76 +397,18 @@ export default function AdminDashboard() {
 
       {/* Categories Section */}
       <div className="mb-12 space-y-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-semibold">Categories</h2>
-          <button
-            onClick={() => setIsCategoryListOpen(!isCategoryListOpen)}
-            className="text-gray-400 hover:text-white"
-          >
-            {isCategoryListOpen ? (
-              <ChevronUp className="w-6 h-6" />
-            ) : (
-              <ChevronDown className="w-6 h-6" />
-            )}
-          </button>
-        </div>
+        <ShowHideList title={'Categories'} isOpen={isCategoryListOpen} handleClick={setIsCategoryListOpen} />
 
         {/* Add Category Form */}
-        <form
-          onSubmit={handleAddCategory}
-          className="mb-6 bg-gray-800 p-4 rounded-lg flex flex-col justify-between h-full"
-        >
-          <div className="flex gap-4 mb-1 flex-1">
-            <input
-              type="text"
-              placeholder="Category Name"
-              value={newCategory.name}
-              onChange={(e) =>
-                setNewCategory({ ...newCategory, name: e.target.value })
-              }
-              className="flex-1 bg-gray-700 rounded px-3 py-2"
-              required
-            />
-            <select
-              value={newCategory.type}
-              onChange={(e) =>
-                setNewCategory({
-                  ...newCategory,
-                  type: e.target.value as Category['type'],
-                })
-              }
-              className="bg-gray-700 rounded px-3 py-2"
-            >
-              <option value="Food">Food</option>
-              <option value="Bar">Bar</option>
-              <option value="Hookah">Hookah</option>
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded flex items-center gap-2 mx-auto mt-4 sm:mt-0 sm:ml-auto sm:mr-0"
-          >
-            <Plus className="w-4 h-4" /> Add
-          </button>
-        </form>
+        <AddCategoryForm newCategory={newCategory} setNewCategory={setNewCategory} handleAddCategory={handleAddCategory} />
 
         {/* Category Search */}
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input
-            type="text"
-            placeholder="Search categories..."
-            value={categorySearch}
-            onChange={(e) => setCategorySearch(e.target.value)}
-            className="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <SearchAndFilter searchValue={categorySearch} handleSearch={setCategorySearch} showFilter={false} />
 
         {/* Categories List */}
         {isCategoryListOpen &&
           Object.entries(groupedCategoryItems).map(
             ([type, subCategories], index) => {
-              // console.log(type, subCategories); // LOG CATEGORIES GROUP
               return (
                 <div key={index} className="bg-gray-800/50 p-4 rounded-lg">
                   <h3 className="text-xl font-semibold mb-4">{type}</h3>
@@ -649,126 +445,22 @@ export default function AdminDashboard() {
         <h2 className="text-2xl font-semibold mb-4">Menu Items</h2>
 
         {/* Add Menu Item Form */}
-        <form
-          onSubmit={handleAddMenuItem}
-          className="mb-6 bg-gray-800 p-4 rounded-lg"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Item Name"
-              value={newMenuItem.name}
-              onChange={(e) =>
-                setNewMenuItem({ ...newMenuItem, name: e.target.value })
-              }
-              className="bg-gray-700 rounded px-3 py-2"
-              required
-            />
-            <input
-              type="number"
-              placeholder="Price"
-              value={newMenuItem.price || ''}
-              onChange={(e) =>
-                setNewMenuItem({
-                  ...newMenuItem,
-                  price: parseFloat(e.target.value),
-                })
-              }
-              className="bg-gray-700 rounded px-3 py-2"
-              required
-            />
-            <input
-              type="number"
-              placeholder="Rating (1-5)"
-              value={newMenuItem.rating}
-              onChange={(e) =>
-                setNewMenuItem({
-                  ...newMenuItem,
-                  rating: parseInt(e.target.value),
-                })
-              }
-              min="1"
-              max="5"
-              className="bg-gray-700 rounded px-3 py-2"
-              required
-            />
-            <div className="relative">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-                id="image-upload"
-                required
-              />
-              <label
-                htmlFor="image-upload"
-                className="flex items-center gap-2 bg-gray-700 rounded px-3 py-2 cursor-pointer hover:bg-gray-600 transition-colors"
-              >
-                <Upload className="w-4 h-4" />
-                {imageFile ? 'Change Image' : 'Upload Image'}
-              </label>
-              {imagePreview && (
-                <div className="mt-2">
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                </div>
-              )}
-            </div>
-            <select
-              value={newMenuItem.category_id}
-              onChange={(e) =>
-                setNewMenuItem({ ...newMenuItem, category_id: e.target.value })
-              }
-              className="bg-gray-700 rounded px-3 py-2"
-              required
-            >
-              <option value="">Select Category</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              disabled={isUploading}
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded flex items-center gap-2 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Plus className="w-4 h-4" />{' '}
-              {isUploading ? 'Uploading...' : 'Add Item'}
-            </button>
-          </div>
-        </form>
+        <AddMenuItemForm newMenuItem={newMenuItem}
+          setNewMenuItem={setNewMenuItem}
+          handleAddMenuItem={handleAddMenuItem}
+          handleImageChange={handleImageChange}
+          imageFile={imageFile}
+          imagePreview={imagePreview}
+          categories={categories}
+          isUploading={isUploading} />
 
         {/* Menu Item Search and Filter */}
-        <div className="flex gap-4 mb-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search menu items..."
-              value={itemSearch}
-              onChange={(e) => setItemSearch(e.target.value)}
-              className="w-full bg-gray-800 rounded-lg pl-10 pr-4 py-2 focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <select
-            value={selectedCategoryFilter}
-            onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-            className="bg-gray-800 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="all">All Categories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <SearchAndFilter
+          searchValue={itemSearch}
+          handleSearch={setItemSearch}
+          options={categories}
+          filterValue={selectedCategoryFilter}
+          handleSelect={setSelectedCategoryFilter} />
 
         {/* Menu Items List */}
         <div className="space-y-8">
@@ -802,110 +494,24 @@ export default function AdminDashboard() {
                         .sort((a, b) => a.position - b.position)
                         .map((item) => (
                           editingMenuItem?.id == item.id ?
-                          <div key={item.id} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input
-                              type="text"
-                              value={editingMenuItem.name}
-                              onChange={(e) =>
-                                setEditingMenuItem({
-                                  ...editingMenuItem,
-                                  name: e.target.value,
-                                })
-                              }
-                              className="bg-gray-700 rounded px-3 py-2"
+                            <EditMenuItemForm
+                              key={item.id}
+                              item={item}
+                              categories={categories}
+                              handleUpdateMenuItem={handleUpdateMenuItem}
+                              handleImageChange={handleImageChange}
+                              setEditingMenuItem={setEditingMenuItem}
+                              editingMenuItem={editingMenuItem}
+                              isUploading={isUploading}
                             />
-                            <input
-                              type="number"
-                              value={editingMenuItem.price}
-                              onChange={(e) =>
-                                setEditingMenuItem({
-                                  ...editingMenuItem,
-                                  price: parseFloat(e.target.value),
-                                })
-                              }
-                              className="bg-gray-700 rounded px-3 py-2"
+
+                            : <SortableMenuItem
+                              key={item.id}
+                              item={item}
+                              categories={categories}
+                              onEdit={setEditingMenuItem}
+                              onDelete={handleDeleteMenuItem}
                             />
-                            <input
-                              type="number"
-                              value={editingMenuItem.rating}
-                              onChange={(e) =>
-                                setEditingMenuItem({
-                                  ...editingMenuItem,
-                                  rating: parseInt(e.target.value),
-                                })
-                              }
-                              min="1"
-                              max="5"
-                              className="bg-gray-700 rounded px-3 py-2"
-                            />
-                            <div className="relative">
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                className="hidden"
-                                id={`image-upload-${item.id}`}
-                              />
-                              <label
-                                htmlFor={`image-upload-${item.id}`}
-                                className="flex items-center gap-2 bg-gray-700 rounded px-3 py-2 cursor-pointer hover:bg-gray-600 transition-colors"
-                              >
-                                <Upload className="w-4 h-4" />
-                                Change Image
-                              </label>
-                              {(imagePreview || item.image) && (
-                                <div className="mt-2">
-                                  <img
-                                    src={imagePreview || item.image}
-                                    alt={item.name}
-                                    className="w-20 h-20 object-cover rounded"
-                                  />
-                                </div>
-                              )}
-                            </div>
-                            <select
-                              value={editingMenuItem.category_id}
-                              onChange={(e) =>
-                                setEditingMenuItem({
-                                  ...editingMenuItem,
-                                  category_id: e.target.value,
-                                })
-                              }
-                              className="bg-gray-700 rounded px-3 py-2"
-                            >
-                              {categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                  {category.name}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="flex gap-2">
-                              <button
-                                onClick={() => handleUpdateMenuItem(item.id)}
-                                disabled={isUploading}
-                                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                {isUploading ? 'Uploading...' : 'Save'}
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setEditingMenuItem(null);
-                                  setImageFile(null);
-                                  setImagePreview('');
-                                }}
-                                className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded flex-1"
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </div>
-                          : <SortableMenuItem
-                          key={item.id}
-                          item={item}
-                          categories={categories}
-                          onEdit={setEditingMenuItem}
-                          onDelete={handleDeleteMenuItem}
-                        />
                         ))}
                     </div>
                   </SortableContext>
