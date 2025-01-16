@@ -427,8 +427,8 @@ export default function AdminDashboard() {
                 {subCategories.map((category) =>
                   editingCategory?.id == category.id ?
                     (<EditCategoryForm
-                      category={editingCategory}
-                      setCategory={setEditingCategory}
+                      editingCategory={editingCategory}
+                      setEditingCategory={setEditingCategory}
                       handleUpdateCategory={handleUpdateCategory}
                     />) : (
                       <SortableCategory

@@ -7,16 +7,21 @@ interface Category {
 }
 
 interface UpdateCategoryFormProps {
-    category: Category;                // The category to update
-    setCategory: (category: Category) => void;  // Function to update the category
+    editingCategory: Category;                // The category to update
+    setEditingCategory: (category: Category) => void;  // Function to update the category
     handleUpdateCategory: (event: React.FormEvent) => void;  // Function to handle form submission
 }
 
 export const EditCategoryForm = ({
-    category,
-    setCategory,
+    editingCategory,
+    setEditingCategory,
     handleUpdateCategory,
 }: UpdateCategoryFormProps) => {
+
+    const handleCancel = () => {
+        setEditingCategory(null);
+    };
+
     return (
         <form
             onSubmit={handleUpdateCategory}
@@ -26,18 +31,18 @@ export const EditCategoryForm = ({
                 <input
                     type="text"
                     placeholder="Category Name"
-                    value={category.name}
+                    value={editingCategory.name}
                     onChange={(e) =>
-                        setCategory({ ...category, name: e.target.value })
+                        setEditingCategory({ ...editingCategory, name: e.target.value })
                     }
                     className="flex-1 bg-gray-700 px-3 py-2 w-4/5"
                     required
                 />
                 <select
-                    value={category.type}
+                    value={editingCategory.type}
                     onChange={(e) =>
-                        setCategory({
-                            ...category,
+                        setEditingCategory({
+                            ...editingCategory,
                             type: e.target.value as Category['type'],
                         })
                     }
@@ -48,12 +53,20 @@ export const EditCategoryForm = ({
                     <option value="Hookah">Hookah</option>
                 </select>
             </div>
-            <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded flex items-center gap-2 mx-auto mt-4 sm:mt-0 sm:ml-auto sm:mr-0"
-            >
-                Update
-            </button>
+            <div className="flex gap-2 justify-end mt-2">
+                <button
+                    type="submit"
+                    className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded flex items-center gap-2 sm:mt-0 sm:mr-0"
+                >
+                    Update
+                </button>
+                <button
+                    onClick={handleCancel}
+                    className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded flex items-center gap-2 sm:mt-0 sm:mr-0"
+                >
+                    Cancel
+                </button>
+            </div>
         </form>
     )
 }
