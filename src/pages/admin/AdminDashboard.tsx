@@ -23,8 +23,10 @@ import { SearchAndFilter, ShowHideList } from "../../components/admin/more";
 import {
   AddCategoryForm,
   AddMenuItemForm,
+  EditCategoryForm,
   EditMenuItemForm,
 } from "../../components/admin/forms";
+import { CategoryGroupList } from "../../components/admin/categorySection/CategoryGroupList";
 
 export default function AdminDashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -284,23 +286,24 @@ export default function AdminDashboard() {
     }
   };
 
-  // const handleUpdateCategory = async (id: string) => {
-  //   if (!editingCategory) return;
+  const handleUpdateCategory = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!editingCategory) return;
 
-  //   const { error } = await supabase
-  //     .from('categories')
-  //     .update(editingCategory)
-  //     .eq('id', id);
+    const { error } = await supabase
+      .from('categories')
+      .update(editingCategory)
+      .eq('id', editingCategory.id);
 
-  //   if (error) {
-  //     toast.error('Error updating category');
-  //     return;
-  //   }
+    if (error) {
+      toast.error('Error updating category');
+      return;
+    }
 
-  //   toast.success('Category updated successfully');
-  //   setEditingCategory(null);
-  //   fetchCategories();
-  // };
+    toast.success('Category updated successfully');
+    setEditingCategory(null);
+    fetchCategories();
+  };
 
   const handleUpdateMenuItem = async (id: string) => {
     if (!editingMenuItem) return;
@@ -348,7 +351,7 @@ export default function AdminDashboard() {
 
   const handleDeleteMenuItem = async (id: string) => {
     const { error } = await supabase.from("menu_items").delete().eq("id", id);
-    console.log(editingCategory);
+
     if (error) {
       toast.error("Error deleting menu item");
       return;
@@ -413,34 +416,31 @@ export default function AdminDashboard() {
         {/* Categories List */}
         {isCategoryListOpen &&
           Object.entries(groupedCategoryItems).map(
-            ([type, subCategories], index) => {
-              return (
-                <div key={index} className="bg-gray-800/50 p-4 rounded-lg">
-                  <h3 className="text-xl font-semibold mb-4">{type}</h3>
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEndCategory}
-                  >
-                    <SortableContext
-                      items={subCategories.map((cat) => cat.id)}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      <div className="grid gap-4">
-                        {subCategories.map((category) => (
-                          <SortableCategory
-                            key={category.id}
-                            category={category}
-                            onEdit={setEditingCategory}
-                            onDelete={handleDeleteCategory}
-                          />
-                        ))}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                </div>
-              );
-            }
+            ([type, subCategories], index) => (
+              <CategoryGroupList
+                key={index}
+                type={type}
+                subCategories={subCategories}
+                sensors={sensors}
+                handleDragEndCategory={handleDragEndCategory}
+              >
+                {subCategories.map((category) =>
+                  editingCategory?.id == category.id ?
+                    (<EditCategoryForm
+                      category={editingCategory}
+                      setCategory={setEditingCategory}
+                      handleUpdateCategory={handleUpdateCategory}
+                    />) : (
+                      <SortableCategory
+                        key={category.id}
+                        category={category}
+                        onEdit={setEditingCategory}
+                        onDelete={handleDeleteCategory}
+                      />
+                    )
+                )}
+              </CategoryGroupList>
+            )
           )}
       </div>
 
