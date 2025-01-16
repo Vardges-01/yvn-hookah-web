@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { supabase } from '../../lib/supabase';
+import React, { useState, useEffect } from "react";
+import toast from "react-hot-toast";
+import { supabase } from "../../lib/supabase";
 import {
   DndContext,
   closestCenter,
@@ -9,53 +9,54 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { ShowHideList } from '../../components/admin/more/ShowHideList';
-import { AddCategoryForm } from '../../components/admin/forms/AddCategoryForm';
-import { SearchAndFilter } from '../../components/admin/more/SearchAndFilter';
-import { AddMenuItemForm } from '../../components/admin/forms/AddMenuItemForm';
-import { Category, MenuItem } from '../../components/admin/types/Menu.types';
-import { SortableCategory } from '../../components/admin/categorySection/SortableCategory';
-import { SortableMenuItem } from '../../components/admin/categorySection/SortableMenuItem';
-import { EditMenuItemForm } from '../../components/admin/forms/EditMenuItemForm';
+} from "@dnd-kit/sortable";
+import { Category, MenuItem } from "../../components/admin/types/Menu.types";
+import { SortableCategory } from "../../components/admin/categorySection/SortableCategory";
+import { SortableMenuItem } from "../../components/admin/menuItemsSection/SortableMenuItem";
+import { SearchAndFilter, ShowHideList } from "../../components/admin/more";
+import {
+  AddCategoryForm,
+  AddMenuItemForm,
+  EditMenuItemForm,
+} from "../../components/admin/forms";
 
 export default function AdminDashboard() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [newCategory, setNewCategory] = useState<
-    Omit<Category, 'id' | 'created_at' | 'position'>
+    Omit<Category, "id" | "created_at" | "position">
   >({
-    name: '',
-    type: 'Food',
+    name: "",
+    type: "Food",
   });
   const [newMenuItem, setNewMenuItem] = useState<
-    Omit<MenuItem, 'id' | 'created_at' | 'categories' | 'position'>
+    Omit<MenuItem, "id" | "created_at" | "categories" | "position">
   >({
-    name: '',
+    name: "",
     price: 0,
     rating: 5,
-    image: '🍕',
-    category_id: '',
+    image: "🍕",
+    category_id: "",
   });
 
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [editingMenuItem, setEditingMenuItem] = useState<MenuItem | null>(null);
   const [selectedCategoryFilter, setSelectedCategoryFilter] =
-    useState<string>('all');
+    useState<string>("all");
 
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
 
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
-  const [categorySearch, setCategorySearch] = useState('');
-  const [itemSearch, setItemSearch] = useState('');
+  const [categorySearch, setCategorySearch] = useState("");
+  const [itemSearch, setItemSearch] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -75,13 +76,14 @@ export default function AdminDashboard() {
   }, []);
 
   const fetchCategories = async () => {
-    const { data, error } = await supabase.from('categories').select('*')
-      .order('type', { ascending: true })
-      .order('position', { ascending: true }); // Then order by position
-
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("type", { ascending: true })
+      .order("position", { ascending: true }); // Then order by position
 
     if (error) {
-      toast.error('Error fetching categories');
+      toast.error("Error fetching categories");
       return;
     }
 
@@ -90,13 +92,13 @@ export default function AdminDashboard() {
 
   const fetchMenuItems = async () => {
     const { data, error } = await supabase
-      .from('menu_items')
-      .select('*, categories(*)')
-      .order('category_id', { ascending: false })
-      .order('position', { ascending: true });
+      .from("menu_items")
+      .select("*, categories(*)")
+      .order("category_id", { ascending: false })
+      .order("position", { ascending: true });
 
     if (error) {
-      toast.error('Error fetching menu items');
+      toast.error("Error fetching menu items");
       return;
     }
     setMenuItems(data);
@@ -106,15 +108,16 @@ export default function AdminDashboard() {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const oldIndex = categories.findIndex(cat => cat.id === active.id);
-    const newIndex = categories.findIndex(cat => cat.id === over.id);
+    const oldIndex = categories.findIndex((cat) => cat.id === active.id);
+    const newIndex = categories.findIndex((cat) => cat.id === over.id);
 
     if (categories[oldIndex].type != categories[newIndex].type) return;
 
-
     const updatedCategories = arrayMove(categories, oldIndex, newIndex);
 
-    const filData = updatedCategories.filter((el) => el.type == categories[oldIndex].type)
+    const filData = updatedCategories.filter(
+      (el) => el.type == categories[oldIndex].type
+    );
 
     setCategories(updatedCategories);
 
@@ -125,28 +128,30 @@ export default function AdminDashboard() {
       position: index + 1,
     }));
 
-    const { error } = await supabase
-      .from('categories')
-      .upsert(updates);
+    const { error } = await supabase.from("categories").upsert(updates);
 
     if (error) {
-      toast.error('Error updating positions');
-      console.log(error)
+      toast.error("Error updating positions");
+      console.log(error);
       fetchCategories(); // Revert to original order
     }
 
-    toast.success('Position is update.');
-
+    toast.success("Position is update.");
   };
 
-  const handleDragEndMenuItem = async (event: DragEndEvent, categoryId: string) => {
+  const handleDragEndMenuItem = async (
+    event: DragEndEvent,
+    categoryId: string
+  ) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const categoryItems = menuItems.filter(item => item.category_id === categoryId);
+    const categoryItems = menuItems.filter(
+      (item) => item.category_id === categoryId
+    );
 
-    const oldIndex = categoryItems.findIndex(item => item.id === active.id);
-    const newIndex = categoryItems.findIndex(item => item.id === over.id);
+    const oldIndex = categoryItems.findIndex((item) => item.id === active.id);
+    const newIndex = categoryItems.findIndex((item) => item.id === over.id);
     const updatedItems = arrayMove(categoryItems, oldIndex, newIndex);
 
     // Update positions in database
@@ -155,54 +160,51 @@ export default function AdminDashboard() {
         id: item.id,
         ...item,
         position: index + 1,
-      }
+      };
 
-      delete updateData.categories
+      delete updateData.categories;
 
-      return updateData
+      return updateData;
     });
 
-    const { error } = await supabase
-      .from('menu_items')
-      .upsert(updates);
+    const { error } = await supabase.from("menu_items").upsert(updates);
 
     if (error) {
-      toast.error('Error updating positions');
+      toast.error("Error updating positions");
       fetchMenuItems(); // Revert to original order
       return;
     }
 
     fetchMenuItems(); // Revert to original order
-    toast.success('Position is update.');
-
+    toast.success("Position is update.");
   };
 
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
     const maxPosition = Math.max(0, ...categories.map((c) => c.position));
     const { error } = await supabase
-      .from('categories')
+      .from("categories")
       .insert([{ ...newCategory, position: maxPosition + 1 }]);
 
     if (error) {
-      toast.error('Error adding category');
+      toast.error("Error adding category");
       return;
     }
 
-    toast.success('Category added successfully');
-    setNewCategory({ name: '', type: 'Food' });
+    toast.success("Category added successfully");
+    setNewCategory({ name: "", type: "Food" });
     fetchCategories();
   };
 
   const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
+    const fileExt = file.name.split(".").pop();
     const fileName = `${Math.random()}.${fileExt}`;
     const filePath = `menu-items/${fileName}`;
 
     setIsUploading(true);
     try {
       const { error: uploadError } = await supabase.storage
-        .from('menu-images')
+        .from("menu-images")
         .upload(filePath, file);
 
       if (uploadError) {
@@ -212,14 +214,14 @@ export default function AdminDashboard() {
 
       const {
         data: { publicUrl },
-      } = supabase.storage.from('menu-images').getPublicUrl(filePath);
+      } = supabase.storage.from("menu-images").getPublicUrl(filePath);
 
       return publicUrl;
     } catch (error: any) {
-      if (error.error == 'Bucket not found') {
+      if (error.error == "Bucket not found") {
         // await createBucket();
       }
-      console.error('Error uploading image:', error);
+      console.error("Error uploading image:", error);
       throw error;
     } finally {
       setIsUploading(false);
@@ -240,7 +242,7 @@ export default function AdminDashboard() {
     e.preventDefault();
 
     try {
-      let imageUrl = '';
+      let imageUrl = "";
       if (imageFile) {
         imageUrl = await uploadImage(imageFile);
       }
@@ -253,7 +255,7 @@ export default function AdminDashboard() {
         ...categoryItems.map((item) => item.position)
       );
 
-      const { error } = await supabase.from('menu_items').insert([
+      const { error } = await supabase.from("menu_items").insert([
         {
           ...newMenuItem,
           image: imageUrl,
@@ -265,20 +267,20 @@ export default function AdminDashboard() {
         throw error;
       }
 
-      toast.success('Menu item added successfully');
+      toast.success("Menu item added successfully");
       setNewMenuItem({
-        name: '',
+        name: "",
         price: 0,
         rating: 5,
-        image: '',
-        category_id: '',
+        image: "",
+        category_id: "",
       });
       setImageFile(null);
-      setImagePreview('');
+      setImagePreview("");
       fetchMenuItems();
     } catch (error) {
-      toast.error('Error adding menu item');
-      console.error('Error:', error);
+      toast.error("Error adding menu item");
+      console.error("Error:", error);
     }
   };
 
@@ -312,47 +314,47 @@ export default function AdminDashboard() {
       }
 
       const { error } = await supabase
-        .from('menu_items')
+        .from("menu_items")
         .update({ ...editingMenuItem, image: imageUrl })
-        .eq('id', id);
+        .eq("id", id);
 
       if (error) {
         throw error;
       }
 
-      toast.success('Menu item updated successfully');
+      toast.success("Menu item updated successfully");
       setEditingMenuItem(null);
       setImageFile(null);
-      setImagePreview('');
+      setImagePreview("");
       fetchMenuItems();
     } catch (error) {
-      toast.error('Error updating menu item');
-      console.error('Error:', error);
+      toast.error("Error updating menu item");
+      console.error("Error:", error);
     }
   };
 
   const handleDeleteCategory = async (id: string) => {
-    const { error } = await supabase.from('categories').delete().eq('id', id);
+    const { error } = await supabase.from("categories").delete().eq("id", id);
 
     if (error) {
-      toast.error('Error deleting category');
+      toast.error("Error deleting category");
       return;
     }
 
-    toast.success('Category deleted successfully');
+    toast.success("Category deleted successfully");
     fetchCategories();
     fetchMenuItems();
   };
 
   const handleDeleteMenuItem = async (id: string) => {
-    const { error } = await supabase.from('menu_items').delete().eq('id', id);
-    console.log(editingCategory)
+    const { error } = await supabase.from("menu_items").delete().eq("id", id);
+    console.log(editingCategory);
     if (error) {
-      toast.error('Error deleting menu item');
+      toast.error("Error deleting menu item");
       return;
     }
 
-    toast.success('Menu item deleted successfully');
+    toast.success("Menu item deleted successfully");
     fetchMenuItems();
   };
 
@@ -376,34 +378,37 @@ export default function AdminDashboard() {
       .toLowerCase()
       .includes(itemSearch.toLowerCase());
     const matchesCategory =
-      selectedCategoryFilter === 'all' ||
+      selectedCategoryFilter === "all" ||
       item.category_id === selectedCategoryFilter;
     return matchesSearch && matchesCategory;
   });
-
-  // const groupedMenuItems = filteredMenuItems.reduce((acc, item) => {
-  //   const categoryId = item.category_id;
-  //   if (!acc[categoryId]) {
-  //     acc[categoryId] = [];
-  //   }
-  //   acc[categoryId].push(item);
-  //   return acc;
-  // }, {} as Record<string, MenuItem[]>);
-
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
       {/* Categories Section */}
+
       <div className="mb-12 space-y-8">
-        <ShowHideList title={'Categories'} isOpen={isCategoryListOpen} handleClick={setIsCategoryListOpen} />
+        <ShowHideList
+          title={"Categories"}
+          isOpen={isCategoryListOpen}
+          handleClick={setIsCategoryListOpen}
+        />
 
         {/* Add Category Form */}
-        <AddCategoryForm newCategory={newCategory} setNewCategory={setNewCategory} handleAddCategory={handleAddCategory} />
+        <AddCategoryForm
+          newCategory={newCategory}
+          setNewCategory={setNewCategory}
+          handleAddCategory={handleAddCategory}
+        />
 
         {/* Category Search */}
-        <SearchAndFilter searchValue={categorySearch} handleSearch={setCategorySearch} showFilter={false} />
+        <SearchAndFilter
+          searchValue={categorySearch}
+          handleSearch={setCategorySearch}
+          showFilter={false}
+        />
 
         {/* Categories List */}
         {isCategoryListOpen &&
@@ -418,12 +423,11 @@ export default function AdminDashboard() {
                     onDragEnd={handleDragEndCategory}
                   >
                     <SortableContext
-                      items={subCategories.map(cat => cat.id)}
+                      items={subCategories.map((cat) => cat.id)}
                       strategy={verticalListSortingStrategy}
                     >
                       <div className="grid gap-4">
-                        {subCategories.map(category => (
-
+                        {subCategories.map((category) => (
                           <SortableCategory
                             key={category.id}
                             category={category}
@@ -445,14 +449,16 @@ export default function AdminDashboard() {
         <h2 className="text-2xl font-semibold mb-4">Menu Items</h2>
 
         {/* Add Menu Item Form */}
-        <AddMenuItemForm newMenuItem={newMenuItem}
+        <AddMenuItemForm
+          newMenuItem={newMenuItem}
           setNewMenuItem={setNewMenuItem}
           handleAddMenuItem={handleAddMenuItem}
           handleImageChange={handleImageChange}
           imageFile={imageFile}
           imagePreview={imagePreview}
           categories={categories}
-          isUploading={isUploading} />
+          isUploading={isUploading}
+        />
 
         {/* Menu Item Search and Filter */}
         <SearchAndFilter
@@ -460,7 +466,8 @@ export default function AdminDashboard() {
           handleSearch={setItemSearch}
           options={categories}
           filterValue={selectedCategoryFilter}
-          handleSelect={setSelectedCategoryFilter} />
+          handleSelect={setSelectedCategoryFilter}
+        />
 
         {/* Menu Items List */}
         <div className="space-y-8">
@@ -483,17 +490,19 @@ export default function AdminDashboard() {
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}
-                  onDragEnd={(event) => handleDragEndMenuItem(event, categoryId)}
+                  onDragEnd={(event) =>
+                    handleDragEndMenuItem(event, categoryId)
+                  }
                 >
                   <SortableContext
-                    items={items.map(item => item.id)}
+                    items={items.map((item) => item.id)}
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="grid gap-4">
                       {items
                         .sort((a, b) => a.position - b.position)
-                        .map((item) => (
-                          editingMenuItem?.id == item.id ?
+                        .map((item) =>
+                          editingMenuItem?.id == item.id ? (
                             <EditMenuItemForm
                               key={item.id}
                               item={item}
@@ -504,15 +513,16 @@ export default function AdminDashboard() {
                               editingMenuItem={editingMenuItem}
                               isUploading={isUploading}
                             />
-
-                            : <SortableMenuItem
+                          ) : (
+                            <SortableMenuItem
                               key={item.id}
                               item={item}
                               categories={categories}
                               onEdit={setEditingMenuItem}
                               onDelete={handleDeleteMenuItem}
                             />
-                        ))}
+                          )
+                        )}
                     </div>
                   </SortableContext>
                 </DndContext>
@@ -521,6 +531,6 @@ export default function AdminDashboard() {
           })}
         </div>
       </div>
-    </div >
+    </div>
   );
 }
