@@ -2,216 +2,26 @@ import { Alert, Rating, Snackbar } from "@mui/material";
 import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 
-// const MenuItemCard = ({ item }) => {
+interface MenuItemProps {
+  item: {
+    id: string;
+    name: string;
+    price: number;
+    rating: number;
+    image?: string;
+    description?: string;
+  };
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) => void;
+  onAddToCart: () => void;
+}
 
-//     const { name, imageUrl, price, description, rating } = item;
-
-//     const [showDescrip, setShowDescrip] = useState(false);
-//     const [ratingValue, setRatingValue] = useState(rating || 4);
-//     const [openSnackbar, setOpenSnackbar] = useState(false);
-
-//     const handleClick = () => {
-//         setShowDescrip(!showDescrip)
-//     }
-
-//     useEffect(() => {
-//         setShowDescrip(false)
-//         setRatingValue(rating || 4)
-//     }, [name, rating]);
-
-//     return (
-//         <Box
-//             sx={{
-//                 background: 'none',
-//                 position: 'relative',
-//                 width: '120px',
-//                 height: '170px',
-//                 maxWidth: '120px',
-//                 maxHeigth: '170px'
-//             }}>
-//             <img
-//                 onClick={handleClick}
-//                 style={{
-//                     background: 'none',
-//                     border: 1,
-//                     filter: 'drop-shadow(0px 5px 10px rgba(0, 167, 189))'
-//                 }}
-//                 height={100}
-//                 width={120}
-//                 src={imageUrl ? 'https://dev.yvnhookah.am' + imageUrl : 'https://dev.yvnhookah.am/default.jpg'}
-//                 alt={name}
-//             />
-//             <Box sx={{
-//                 position: 'absolute',
-//                 top: '45%',
-//                 backgroundColor: 'rgba(49, 54, 56, 0.9)',
-//                 color: 'white',
-//                 borderRadius: '10px 10px 10px 10px',
-//                 display: 'flex',
-//                 flexDirection: 'column',
-//                 justifyContent: 'center',
-//                 alignItems: 'center',
-//                 textAlign: 'center',
-//                 width: '100%',
-//                 pb: 1
-//             }}>
-//                 <Rating
-//                     sx={{ color: '#1976D2', py: 1, pt: 1 }}
-//                     name="simple-controlled"
-//                     value={ratingValue}
-//                     onChange={(_event, newValue) => {
-
-//                         setRatingValue(newValue);
-//                         setOpenSnackbar(true)
-//                     }}
-//                     size="small"
-//                 />
-//                 <Typography fontWeight={'bold'} variant="body1" width={'100%'} sx={{
-//                     whiteSpace: 'nowrap',
-//                     overflow: 'scroll',
-//                 }}>{name}</Typography>
-//                 <Typography fontWeight={'bold'} variant="body1">{price + ' ֏'}</Typography>
-//             </Box>
-//             <Grow in={showDescrip} timeout={500}>
-//                 <Box
-//                     onClick={handleClick}
-//                     sx={{
-//                         position: 'absolute',
-//                         backgroundColor: 'rgb(0,0,0,0.9)',
-//                         width: '100%',
-//                         height: '100%',
-//                         minHeight: 205,
-//                         top: '3%',
-//                         color: 'white',
-//                     }}>
-//                     {description?.split('-').map((el, index) => (
-//                         <Typography variant="body2" key={index}>
-//                             {'- ' + el}
-//                         </Typography>
-//                     ))}
-//                 </Box>
-//             </Grow>
-//             <Snackbar
-//                 open={openSnackbar}
-//                 autoHideDuration={4000}
-//                 onClose={() => {
-//                     setOpenSnackbar(false)
-//                 }}
-//             >
-//                 <Alert severity="success">
-//                     {`Thanks for Rate :)`}
-//                 </Alert>
-//             </Snackbar>
-//         </Box>
-//     )
-// }
-
-// const MenuItemCard2 = ({ item }) => {
-//   const { name, imageUrl, price, rating } = item;
-
-//   const [showDescrip, setShowDescrip] = useState(false);
-//   const [ratingValue, setRatingValue] = useState(rating || 4);
-//   const [openSnackbar, setOpenSnackbar] = useState(false);
-
-//   const handleClick = () => {
-//     setShowDescrip(!showDescrip);
-//   };
-
-//   useEffect(() => {
-//     setShowDescrip(false);
-//     setRatingValue(rating || 4);
-//   }, [name, rating]);
-
-//   return (
-//     <Box
-//       sx={{
-//         background: "none",
-//         position: "relative",
-//         width: "100%",
-//         height: "100%",
-//         display: "flex",
-//         justifyContent: "center",
-//       }}
-//     >
-//       <Box
-//         sx={{
-//           position: "relative",
-//           top: "20%",
-//           backgroundColor: "rgba(49, 54, 56, 0.9)",
-//           color: "white",
-//           borderRadius: "10px 10px 10px 10px",
-//           display: "flex",
-//           flexDirection: "column",
-//           justifyContent: "end",
-//           alignItems: "center",
-//           textAlign: "center",
-//           width: "170px",
-//           height: "200px",
-//           pb: 1,
-//         }}
-//       >
-//         <Rating
-//           sx={{ color: "#1976D2", py: 1, pt: 1 }}
-//           name="simple-controlled"
-//           value={ratingValue}
-//           onChange={(_event, newValue) => {
-//             setRatingValue(newValue);
-//             setOpenSnackbar(true);
-//           }}
-//           size="large"
-//         />
-//         <Typography
-//           fontWeight={"bold"}
-//           fontSize={"22px"}
-//           width={"100%"}
-//           sx={{
-//             whiteSpace: "nowrap",
-//             overflow: "auto",
-//           }}
-//         >
-//           {name}
-//         </Typography>
-//         <Typography fontWeight={"bold"} fontSize={"20px"} color={"#2EB3CF"}>
-//           {price + "֏"}
-//         </Typography>
-//       </Box>
-//       <Box
-//         position={"absolute"}
-//         bgcolor={"white"}
-//         borderRadius={"50%"}
-//         top={"0%"}
-//       >
-//         <img
-//           onClick={handleClick}
-//           style={{
-//             background: "none",
-//             border: 1,
-//             margin: 10,
-//           }}
-//           height={120}
-//           width={120}
-//           src={
-//             imageUrl
-//               ? "https://dev.yvnhookah.am" + imageUrl
-//               : "https://dev.yvnhookah.am/default.jpg"
-//           }
-//           alt={name}
-//         />
-//       </Box>
-//       <Snackbar
-//         open={openSnackbar}
-//         autoHideDuration={4000}
-//         onClose={() => {
-//           setOpenSnackbar(false);
-//         }}
-//       >
-//         <Alert severity="success">{`Thanks for Rate :)`}</Alert>
-//       </Snackbar>
-//     </Box>
-//   );
-// };
-
-const MenuItemCard3 = ({ item, isFavorite, onToggleFavorite }) => {
+const MenuItemCard = ({
+  item,
+  isFavorite,
+  onToggleFavorite,
+  onAddToCart,
+}: MenuItemProps) => {
   const { rating } = item;
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -225,7 +35,9 @@ const MenuItemCard3 = ({ item, isFavorite, onToggleFavorite }) => {
             onClick={() => onToggleFavorite(item.id)}
             className="absolute top-4 right-4 text-xl"
           >
-            <FaHeart className={isFavorite ? 'text-red-500' : 'text-gray-400'} />
+            <FaHeart
+              className={isFavorite ? "text-red-500" : "text-gray-400"}
+            />
           </button>
           {item.image ? (
             <img
@@ -253,9 +65,20 @@ const MenuItemCard3 = ({ item, isFavorite, onToggleFavorite }) => {
           <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-center">
             {item.name}
           </h3>
-          <p className="text-blue-400 font-semibold text-base md:text-lg">
+          {item.description != "NULL" && (
+            <p className="text-gray-400 text-sm md:text-base text-center mb-3 line-clamp-2">
+              {item.description}
+            </p>
+          )}
+          <p className="text-blue-400 font-semibold text-base md:text-lg mb-3">
             {item.price} ֏
           </p>
+          <button
+            onClick={onAddToCart}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-full text-white transition-all transform hover:scale-105"
+          >
+            Order
+          </button>
         </div>
         <Snackbar
           open={openSnackbar}
@@ -271,9 +94,8 @@ const MenuItemCard3 = ({ item, isFavorite, onToggleFavorite }) => {
           <Alert severity="success">{`Thanks for Rate :)`}</Alert>
         </Snackbar>
       </>
-
     )
   );
 };
 
-export default MenuItemCard3;
+export default MenuItemCard;

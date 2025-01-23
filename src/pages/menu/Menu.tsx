@@ -10,17 +10,35 @@ export const Menu = () => {
   // const [categories, setCategories] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
 
-  const [categoryTabValue, setCategoryTabValue] = useState('Food');
+  const [categoryTabValue, setCategoryTabValue] = useState("Food");
   const [subCategoryTabValue, setSubCategoryValue] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
+  const [favorites, setFavorites] = useState(() => {
+    const savedFavorites = localStorage.getItem("favorites");
+    return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
+  });
+
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify([...favorites]));
+
+    if ([...favorites]?.length == 0) {
+      const firstSubCategory = subCategories.find(
+        (cat) => cat.type === categoryTabValue
+      );
+
+      if (firstSubCategory) {
+        setSubCategoryValue(firstSubCategory.id);
+      }
+    }
+  }, [favorites]);
 
   const handleChangeTabCategory = (newValue) => {
     setCategoryTabValue(newValue);
 
-    const firstCategory = subCategories.find((cat) => cat.type === newValue);
+    const firstSubCategory = subCategories.find((cat) => cat.type === newValue);
 
-    if (firstCategory) {
-      setSubCategoryValue(firstCategory.id);
+    if (firstSubCategory) {
+      setSubCategoryValue(firstSubCategory.id);
     }
   };
 
@@ -34,9 +52,9 @@ export const Menu = () => {
   }, []);
 
   const fetchCategories = async () => {
-    const { data } = await supabase.from('categories').select('*');
+    const { data } = await supabase.from("categories").select("*");
 
-    const typeOrder = ['Food', 'Bar', 'Hookah'];
+    const typeOrder = ["Food", "Bar", "Hookah"];
 
     const filteredItems = data?.sort((a, b) => {
       return typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type);
@@ -48,53 +66,71 @@ export const Menu = () => {
 
     setSubCategories(sortedCategories || []);
 
-    if (sortedCategories && sortedCategories.length > 0 && !subCategoryTabValue) {
+    if (
+      sortedCategories &&
+      sortedCategories.length > 0 &&
+      !subCategoryTabValue
+    ) {
       setSubCategoryValue(sortedCategories[0].id);
     }
   };
 
   const fetchMenuItems = async () => {
-    const { data } = await supabase.from('menu_items').select('*').order('position');
+    const { data } = await supabase
+      .from("menu_items")
+      .select("*")
+      .order("position");
 
     setMenuItems(data || []);
   };
 
-  const filteredCategories = subCategories.filter((cat) => cat.type === categoryTabValue);
+  const filteredCategories = subCategories.filter(
+    (cat) => cat.type === categoryTabValue
+  );
 
-  const filteredMenuItems = menuItems.filter((item) => {
-    const matchesSubCategory =
-      item.category_id === subCategoryTabValue;
-    return matchesSubCategory;
-  });
+  const favoriteItems = menuItems.filter((item) => favorites.has(item.id));
+
+  const filteredMenuItems =
+    subCategoryTabValue == "favorite"
+      ? favoriteItems
+      : menuItems.filter((item) => {
+          const matchesSubCategory = item.category_id === subCategoryTabValue;
+          return matchesSubCategory;
+        });
 
   return (
     <Box>
-        <AutoScrollCarousel />
+      <AutoScrollCarousel />
+      <Box
+        sx={{
+          py: 1,
+          height: "auto",
+        }}
+      >
         <Box
-          sx={{
-            py: 1,
-            height: "auto",
-          }}
+          display={"flex"}
+          justifyContent={"center"}
+          flexDirection={"column"}
+          sx={{ width: "100%" }}
         >
-          <Box
-            display={"flex"}
-            justifyContent={"center"}
-            flexDirection={"column"}
-            sx={{ width: "100%" }}
-          >
-            <CategoryTabs
-              categories={['Food','Bar','Hookah']}
-              tabValue={categoryTabValue}
-              handleChange={handleChangeTabCategory}
-            />
-            <SubCategoryTabs
-              subCategories={filteredCategories}
-              tabValue={subCategoryTabValue}
-              handleChange={handleChangeTabSubCategory}
-            />
-          </Box>
-          <MenuList menuItems={filteredMenuItems}></MenuList>
+          <CategoryTabs
+            categories={["Food", "Bar", "Hookah"]}
+            tabValue={categoryTabValue}
+            handleChange={handleChangeTabCategory}
+          />
+          <SubCategoryTabs
+            subCategories={filteredCategories}
+            tabValue={subCategoryTabValue}
+            handleChange={handleChangeTabSubCategory}
+            hasFavorites={favoriteItems.length > 0}
+          />
         </Box>
+        <MenuList
+          menuItems={filteredMenuItems}
+          favorites={favorites}
+          setFavorites={setFavorites}
+        ></MenuList>
       </Box>
-    )
+    </Box>
+  );
 };
