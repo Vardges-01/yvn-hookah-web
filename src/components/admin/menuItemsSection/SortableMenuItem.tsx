@@ -39,10 +39,10 @@ export const SortableMenuItem = ({
             </div>
           )}
           <div>
-            <h3 className="font-semibold">{item.name}</h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="text-lg font-semibold">{item.name}</h3>
+            <p className="text-lg text-gray-400">
               {categories.find((c) => c.id === item.category_id)?.name} -{" "}
-              {item.price}₸
+              {item.price} ֏
             </p>
           </div>
         </div>
@@ -55,10 +55,9 @@ export const SortableMenuItem = ({
           </button>
           <button
             onClick={(e) => {
-              e.stopPropagation(); // Остановить конфликт событий
-              onDelete(item.id); // Вызвать обработчик
+              e.stopPropagation();
+              onDelete(item.id);
             }}
-            // onClick={() => onDelete(item.id)}
             className="text-red-400 hover:text-red-300"
           >
             <Trash2 className="w-5 h-5" />

@@ -9,7 +9,7 @@ export default function SpecialOffers() {
   const offers = [
     {
       title: "2 Large Pizzas",
-      description: "Get 2 large pizzas for 4500₸",
+      description: "Get 2 large pizzas for 4500 ֏",
       bgColor: "from-blue-800 via-blue-700 to-blue-800",
     },
     {
@@ -24,7 +24,7 @@ export default function SpecialOffers() {
     },
     {
       title: "Family Bundle",
-      description: "2 pizzas + 2 drinks + dessert for 8000₸",
+      description: "2 pizzas + 2 drinks + dessert for 8000 ֏",
       bgColor: "from-green-800 via-green-700 to-green-800",
     },
   ];

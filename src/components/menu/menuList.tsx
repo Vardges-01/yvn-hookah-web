@@ -1,8 +1,9 @@
 // import { Box, Grid } from "@mui/material";
+import { toast } from "react-hot-toast";
 import MenuItemCard from "./menuItems";
-import { useEffect } from "react";
 
-const MenuList = ({ menuItems, favorites, setFavorites }) => {
+const MenuList = ({ menuItems, favorites, setFavorites, setCartItems }) => {
+
   const toggleFavorite = (itemId) => {
     setFavorites((prev) => {
       const newFavorites = new Set(prev);
@@ -15,6 +16,22 @@ const MenuList = ({ menuItems, favorites, setFavorites }) => {
     });
   };
 
+  const addToCart = (item) => {
+    setCartItems((prev) => {
+      const existingItem = prev.find((i) => i.id === item.id);
+      if (existingItem) {
+        return prev.map((i) =>
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        );
+      }
+      return [
+        ...prev,
+        { id: item.id, name: item.name, price: item.price, quantity: 1 },
+      ];
+    });
+    toast.success(`${item.name} added to cart`);
+  };
+  
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 p-4 md:p-6">
       {menuItems.map((item) => (
@@ -23,7 +40,7 @@ const MenuList = ({ menuItems, favorites, setFavorites }) => {
           item={item}
           isFavorite={favorites.has(item.id)}
           onToggleFavorite={toggleFavorite}
-          onAddToCart={() => console.log("ADD TO CART")}
+          onAddToCart={() => addToCart(item)}
         />
       ))}
     </div>

@@ -1,14 +1,17 @@
 import { BrowserRouter } from 'react-router-dom'
 import Router from './routes'
 import Layout from './components/Layout/Layout'
+import { CartProvider } from './context/CartContext'
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
-        <Layout>
-          <Router />
-        </Layout>
+        <CartProvider>
+          <Layout>
+            <Router />
+          </Layout>
+        </CartProvider>
       </BrowserRouter>
     </>
   )

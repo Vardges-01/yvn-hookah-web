@@ -1,11 +1,10 @@
 import { Box, Divider } from "@mui/material";
 import Navbar from "../appBars/navbar";
 import { Toaster } from "react-hot-toast";
-import { cloneElement, useState } from "react";
+import { useCart } from "../../context/CartContext";
 
 const Layout = ({ children }) => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+  const { isCartOpen, setIsCartOpen, cartItemsCount } = useCart();
 
   return (
     <>
@@ -15,11 +14,11 @@ const Layout = ({ children }) => {
         <Toaster position="top-right" />
         <Navbar
           cartItemsCount={cartItemsCount}
-          onCartClick={() => setIsCartOpen(true)}
+          onCartClick={() => setIsCartOpen(!isCartOpen)}
         />
         <Divider />
         <Box flexGrow={1}>
-          {cloneElement(children, { isCartOpen, setCartItemsCount })}
+          {children}
         </Box>
       </Box>
     </>

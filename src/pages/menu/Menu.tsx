@@ -5,8 +5,22 @@ import SubCategoryTabs from "../../components/tabs/subCategoryTabs";
 import MenuList from "../../components/menu/menuList";
 import AutoScrollCarousel from "../../components/menu/autoScrollCarousel";
 import { supabase } from "../../lib/supabase";
+import Cart from "../../components/menu/Cart";
+import toast from "react-hot-toast";
+import { useCart } from "../../context/CartContext";
+
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+}
 
 export const Menu = () => {
+
+  const { isCartOpen, setIsCartOpen } = useCart();
+
+  console.log("AAAAA", isCartOpen)
   // const [categories, setCategories] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
 
@@ -17,6 +31,31 @@ export const Menu = () => {
     const savedFavorites = localStorage.getItem("favorites");
     return savedFavorites ? new Set(JSON.parse(savedFavorites)) : new Set();
   });
+
+  const { setCartItemsCount } = useCart()
+
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  const updateCartItemQuantity = (id: string, quantity: number) => {
+    setCartItems((prev) => {
+      if (quantity === 0) {
+        return prev.filter((item) => item.id !== id);
+      }
+      return prev.map((item) =>
+        item.id === id ? { ...item, quantity } : item
+      );
+    });
+  };
+
+  const removeCartItem = (id: string) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleCheckout = () => {
+    toast.success('Order placed successfully!');
+    setCartItems([]);
+    setIsCartOpen(false);
+  };
 
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify([...favorites]));
@@ -31,6 +70,10 @@ export const Menu = () => {
       }
     }
   }, [favorites]);
+
+  useEffect(() => {
+    setCartItemsCount(cartItems.length)
+  }, [cartItems])
 
   const handleChangeTabCategory = (newValue) => {
     setCategoryTabValue(newValue);
@@ -94,9 +137,9 @@ export const Menu = () => {
     subCategoryTabValue == "favorite"
       ? favoriteItems
       : menuItems.filter((item) => {
-          const matchesSubCategory = item.category_id === subCategoryTabValue;
-          return matchesSubCategory;
-        });
+        const matchesSubCategory = item.category_id === subCategoryTabValue;
+        return matchesSubCategory;
+      });
 
   return (
     <Box>
@@ -129,8 +172,17 @@ export const Menu = () => {
           menuItems={filteredMenuItems}
           favorites={favorites}
           setFavorites={setFavorites}
+          setCartItems={setCartItems}
         ></MenuList>
       </Box>
+      <Cart
+        items={cartItems}
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        onUpdateQuantity={updateCartItemQuantity}
+        onRemoveItem={removeCartItem}
+        onCheckout={handleCheckout}
+      />
     </Box>
   );
 };
