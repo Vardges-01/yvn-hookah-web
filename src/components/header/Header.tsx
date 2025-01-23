@@ -3,7 +3,7 @@
 // import MobileAppBar from '../appBars/mobileAppBar';
 // import MainAppBar from '../appBars/appBar';
 // import { useNavigate } from "react-router-dom";
-import Navbar from "../appBars/navbar";
+// import Navbar from "../appBars/navbar";
 
 const Header = () => {
   //   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Header = () => {
   //     </AppBar>
   // )
 
-  return <Navbar />;
+  // return <Navbar />;
 };
 
 export default Header;
