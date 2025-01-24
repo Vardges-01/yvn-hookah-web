@@ -41,16 +41,16 @@ const MenuItemCard = ({
           </button>
           {item.image ? (
             <img
-              className="w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mb-4 md:mb-6 flex items-center justify-center text-3xl md:text-4xl shadow-lg"
+              className="w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mb-2 md:mb-6 flex items-center justify-center text-3xl md:text-4xl shadow-lg"
               src={item.image}
             />
           ) : (
-            <div className="w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mb-4 md:mb-6 flex items-center justify-center text-3xl md:text-4xl shadow-lg">
+            <div className="w-24 h-24 md:w-36 md:h-36 bg-gradient-to-br from-gray-700 to-gray-800 rounded-full mb-2 md:mb-6 flex items-center justify-center text-3xl md:text-4xl shadow-lg">
               🍕
             </div>
           )}
 
-          <div className="flex mb-2 md:mb-3 text-yellow-400">
+          <div className="flex md:mb-2 text-yellow-400">
             <Rating
               sx={{ color: "#ffca28", py: 1, pt: 1 }}
               name="rate"

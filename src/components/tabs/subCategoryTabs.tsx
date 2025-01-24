@@ -4,7 +4,6 @@ const SubCategoryTabs = ({
   handleChange,
   hasFavorites,
 }) => {
-  console.log(hasFavorites);
   return (
     // Food Categories
     <div className="flex gap-3 md:gap-4 p-4 md:p-6 overflow-x-auto scrollbar-hide">
