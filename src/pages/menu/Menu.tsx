@@ -21,9 +21,9 @@ export const Menu = () => {
   const { isCartOpen, setIsCartOpen } = useCart();
 
   // const [categories, setCategories] = useState(null);
-  const [subCategories, setSubCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  const [categoryTabValue, setCategoryTabValue] = useState("Food");
+  const [typeTabValue, setTypeTabValue] = useState("food");
   const [subCategoryTabValue, setSubCategoryValue] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
   const [favorites, setFavorites] = useState(() => {
@@ -60,8 +60,8 @@ export const Menu = () => {
     localStorage.setItem("favorites", JSON.stringify([...favorites]));
 
     if ([...favorites]?.length == 0) {
-      const firstSubCategory = subCategories.find(
-        (cat) => cat.type === categoryTabValue
+      const firstSubCategory = categories.find(
+        (cat) => cat.type === typeTabValue
       );
 
       if (firstSubCategory) {
@@ -75,10 +75,9 @@ export const Menu = () => {
   }, [cartItems])
 
   const handleChangeTabCategory = (newValue) => {
-    setCategoryTabValue(newValue);
+    setTypeTabValue(newValue);
 
-    const firstSubCategory = subCategories.find((cat) => cat.type === newValue);
-
+    const firstSubCategory = categories.find((cat) => (cat.type).toLowerCase() === newValue);
     if (firstSubCategory) {
       setSubCategoryValue(firstSubCategory.id);
     }
@@ -106,7 +105,7 @@ export const Menu = () => {
       (a, b) => a.position - b.position
     );
 
-    setSubCategories(sortedCategories || []);
+    setCategories(sortedCategories || []);
 
     if (
       sortedCategories &&
@@ -126,8 +125,8 @@ export const Menu = () => {
     setMenuItems(data || []);
   };
 
-  const filteredCategories = subCategories.filter(
-    (cat) => cat.type === categoryTabValue
+  const filteredCategories = categories.filter(
+    (cat) => (cat.type).toLowerCase() === typeTabValue
   );
 
   const favoriteItems = menuItems.filter((item) => favorites.has(item.id));
@@ -157,7 +156,7 @@ export const Menu = () => {
         >
           <CategoryTabs
             categories={["food", "bar", "hookah"]}
-            tabValue={categoryTabValue}
+            tabValue={typeTabValue}
             handleChange={handleChangeTabCategory}
           />
           <SubCategoryTabs
