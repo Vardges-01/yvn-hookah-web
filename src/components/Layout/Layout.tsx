@@ -1,7 +1,7 @@
 import { Box, Divider } from "@mui/material";
-import Navbar from "../appBars/navbar";
 import { Toaster } from "react-hot-toast";
 import { useCart } from "../../context/CartContext";
+import Header from "../header/Header";
 
 const Layout = ({ children }) => {
   const { isCartOpen, setIsCartOpen, cartItemsCount } = useCart();
@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
         sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
         <Toaster position="top-right" />
-        <Navbar
+        <Header
           cartItemsCount={cartItemsCount}
           onCartClick={() => setIsCartOpen(!isCartOpen)}
         />
