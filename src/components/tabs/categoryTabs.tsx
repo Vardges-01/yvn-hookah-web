@@ -1,4 +1,8 @@
+import { useTranslation } from "react-i18next";
+
 const CategoryTabs = ({ categories, tabValue, handleChange }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex justify-center gap-8 md:gap-12 p-4 md:p-6 border-b border-gray-800">
       {categories.map((tab) => (
@@ -11,7 +15,7 @@ const CategoryTabs = ({ categories, tabValue, handleChange }) => {
           }`}
           onClick={() => handleChange(tab)}
         >
-          {tab}
+          {t(`types.${tab}`)}
         </button>
       ))}
     </div>

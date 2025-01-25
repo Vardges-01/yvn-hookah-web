@@ -1,4 +1,5 @@
 import { Trash2, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface CartItem {
   id: string;
@@ -16,15 +17,16 @@ interface CartProps {
   onCheckout: () => void;
 }
 
-export default function Cart({ 
-  items, 
-  isOpen, 
+export default function Cart({
+  items,
+  isOpen,
   onClose,
-  onUpdateQuantity, 
-  onRemoveItem, 
-  onCheckout 
+  onUpdateQuantity,
+  onRemoveItem,
+  onCheckout
 }: CartProps) {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { t } = useTranslation();
 
   if (!isOpen) return null;
 
@@ -32,7 +34,7 @@ export default function Cart({
     <div className="fixed inset-0 bg-black/50 flex justify-end z-50">
       <div className="bg-gray-800 w-full max-w-md h-full overflow-y-auto p-6 animate-slide-in">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold">Your Order</h3>
+          <h3 className="text-xl font-semibold"> {t('your_order')} </h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-white transition-colors"
@@ -42,14 +44,14 @@ export default function Cart({
         </div>
 
         {items.length === 0 ? (
-          <p className="text-gray-400 text-center">Your cart is empty</p>
+          <p className="text-gray-400 text-center">{t('emty_cart')}</p>
         ) : (
           <>
             <div className="space-y-4">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center justify-between gap-4 bg-gray-700/50 p-4 rounded-lg">
                   <div className="flex-1">
-                    <p className="font-medium">{item.name}</p>
+                    <p className="font-medium">{t(`items.${item.name}`)}</p>
                     <p className="text-sm text-gray-400">{item.price}֏ × {item.quantity}</p>
                   </div>
                   <div className="flex items-center gap-3">
@@ -81,14 +83,14 @@ export default function Cart({
 
             <div className="mt-6 pt-6 border-t border-gray-700">
               <div className="flex justify-between mb-6">
-                <span className="text-lg font-semibold">Total:</span>
+                <span className="text-lg font-semibold">{t('total')}:</span>
                 <span className="text-lg font-semibold">{total} ֏</span>
               </div>
               <button
                 onClick={onCheckout}
                 className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-medium transition-colors"
               >
-                Checkout
+                {t('clear')}
               </button>
             </div>
           </>

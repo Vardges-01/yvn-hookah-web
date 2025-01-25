@@ -20,7 +20,6 @@ export const Menu = () => {
 
   const { isCartOpen, setIsCartOpen } = useCart();
 
-  console.log("AAAAA", isCartOpen)
   // const [categories, setCategories] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
 
@@ -157,7 +156,7 @@ export const Menu = () => {
           sx={{ width: "100%" }}
         >
           <CategoryTabs
-            categories={["Food", "Bar", "Hookah"]}
+            categories={["food", "bar", "hookah"]}
             tabValue={categoryTabValue}
             handleChange={handleChangeTabCategory}
           />

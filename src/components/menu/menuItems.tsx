@@ -1,5 +1,6 @@
 import { Alert, Rating, Snackbar } from "@mui/material";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FaHeart } from "react-icons/fa";
 
 interface MenuItemProps {
@@ -26,6 +27,8 @@ const MenuItemCard = ({
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [ratingValue, setRatingValue] = useState(rating || 4);
+
+  const { t } = useTranslation(); 
 
   return (
     item && (
@@ -63,7 +66,7 @@ const MenuItemCard = ({
             />
           </div>
           <h3 className="text-lg md:text-xl font-bold mb-1 md:mb-2 text-center">
-            {item.name}
+            {t(`items.${item.name}`)}
           </h3>
           {item.description != "NULL" && (
             <p className="text-gray-400 text-sm md:text-base text-center mb-3 line-clamp-2">
@@ -77,7 +80,7 @@ const MenuItemCard = ({
             onClick={onAddToCart}
             className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-full text-white transition-all transform hover:scale-105"
           >
-            Order
+            +
           </button>
         </div>
         <Snackbar

@@ -1,38 +1,61 @@
-// import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
-// import { Icon } from "@iconify/react";
-// import MobileAppBar from '../appBars/mobileAppBar';
-// import MainAppBar from '../appBars/appBar';
-// import { useNavigate } from "react-router-dom";
-// import Navbar from "../appBars/navbar";
+import { useState } from "react";
+import { FaPhone } from "react-icons/fa";
+import AboutModal from "../modals/aboutModal";
+import { ShoppingCart } from "lucide-react";
+import LanguageSelector from "../admin/more/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
-const Header = () => {
-  //   const navigate = useNavigate();
+interface NavbarProps {
+  cartItemsCount: number;
+  onCartClick: () => void;
+}
 
-  // return (
-  //     <AppBar sx={{backgroundColor: 'rgba(19,19,19,0.9)', width: '100%'}} position='fixed'>
-  //         <Toolbar>
-  //             {/* <MobileAppBar/>
-  //             <MainAppBar/> */}
-  //             <Box flexGrow={1} >
-  //             <IconButton onClick={() => { navigate('/') }} color='inherit' aria-label='logo' sx={{ display: 'flex', flexDirection: 'row', gap: '10px', }}>
-  //                  <img
-  //                     src="/yvn-logo.svg"
-  //                     alt=""
-  //                     width='160'
-  //                     height='60'
-  //                 />
-  //             </IconButton>
-  //         </Box>
-  //             <Box sx={{color: '#1970C7', border: 1, p: 0.5, height: 40, borderRadius: '10px'}}
-  //                  onClick={() => window.location.href = `tel:+37499115211`}
-  //             >
-  //                 <Icon height={40} width={'30px'} icon="gridicons:phone"/>
-  //             </Box>
-  //         </Toolbar>
-  //     </AppBar>
-  // )
+export default function Header({ cartItemsCount, onCartClick }: NavbarProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t } = useTranslation(); 
 
-  // return <Navbar />;
-};
+  return (
+    <>
+      <nav className="p-3 md:p-8 backdrop-blur-sm bg-black/30 sticky top-0 z-40">
+        <div className="flex items-center justify-between mx-auto">
+          {/* Logo */}
+          <img
+            src="https://dev.yvnhookah.am/yvn-logo.svg"
+            alt="YVN Lounge"
+            className="h-10 md:h-16 hover:scale-105 transition-transform"
+          />
 
-export default Header;
+          {/* Navigation Items */}
+          <div className="flex items-center gap-2 md:gap-6">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-3 md:px-8 py-2 text-sm md:text-lg rounded-full border-2 border-white/80 hover:bg-white hover:text-black transition-all transform hover:scale-105"
+            >
+             { t('about')}
+            </button>
+            <button
+              onClick={onCartClick}
+              className="p-2 md:p-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all transform hover:scale-105 flex items-center justify-center relative"
+            >
+              <ShoppingCart className="w-5 h-5 md:w-6 md:h-6" />
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs md:text-sm w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center">
+                  {cartItemsCount}
+                </span>
+              )}
+            </button>
+            <a
+              href="tel:+37499115211"
+              className="p-2 md:p-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all transform hover:scale-105 flex items-center justify-center"
+            >
+              <FaPhone className="text-lg md:text-xl" />
+            </a>
+            <LanguageSelector/>
+          </div>
+        </div>
+      </nav>
+
+      <AboutModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
+  );
+}
