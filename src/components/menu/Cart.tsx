@@ -14,7 +14,7 @@ interface CartProps {
   onClose: () => void;
   onUpdateQuantity: (id: string, quantity: number) => void;
   onRemoveItem: (id: string) => void;
-  onCheckout: () => void;
+  onClear: () => void;
 }
 
 export default function Cart({
@@ -23,7 +23,7 @@ export default function Cart({
   onClose,
   onUpdateQuantity,
   onRemoveItem,
-  onCheckout
+  onClear
 }: CartProps) {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const { t } = useTranslation();
@@ -87,7 +87,7 @@ export default function Cart({
                 <span className="text-lg font-semibold">{total} ֏</span>
               </div>
               <button
-                onClick={onCheckout}
+                onClick={onClear}
                 className="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-medium transition-colors"
               >
                 {t('clear')}

@@ -70,7 +70,7 @@ const MenuItemCard = ({
           </h3>
           {item.description != "NULL" && (
             <p className="text-gray-400 text-sm md:text-base text-center mb-3 line-clamp-2">
-              {item.description}
+              {t(`descriptions.${item.description}`)}
             </p>
           )}
           <p className="text-blue-400 font-semibold text-base md:text-lg mb-3">

@@ -4,6 +4,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { SortableCategoryProps } from "../types/Menu.types"
+import { useTranslation } from "react-i18next";
 
 export const SortableCategory = ({ category, onEdit, onDelete }: SortableCategoryProps) => {
     const {
@@ -13,6 +14,8 @@ export const SortableCategory = ({ category, onEdit, onDelete }: SortableCategor
         transform,
         transition,
     } = useSortable({ id: category.id });
+
+    const { t } = useTranslation();
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -28,8 +31,8 @@ export const SortableCategory = ({ category, onEdit, onDelete }: SortableCategor
             {...listeners}
         >
             <div>
-                <h3 className="font-semibold">{category.name}</h3>
-                <p className="text-sm text-gray-400">{category.type}</p>
+                <h3 className="font-semibold">{t(`categories.${category.name}`)}</h3>
+                <p className="text-sm text-gray-400">{t(`types.${category.type.toLowerCase()}`)}</p>
             </div>
             <div className="flex gap-2">
                 <button

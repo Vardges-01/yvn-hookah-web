@@ -205,9 +205,16 @@
         "beefeater": "Beefeater",
         "hendricks": "Hendricks"
     },
+    "descriptions":{
+        "beer_set_3": "Jerky, pistachios, smoked cheese",
+        "beer_set_2": "3 kinds of chips with sauce",
+        "beer_set_1": "Croutons, onion rings, hunter sausages"
+    },
     "about": "About",
     "your_order": "Your order",
     "emty_cart": "Your cart is empty",
     "total": "Total",
-    "clear": "Clear"
+    "clear": "Clear",
+    "cart_clear_success": "Cart cleared!",
+    "added_to_cart": "added to cart"
 }

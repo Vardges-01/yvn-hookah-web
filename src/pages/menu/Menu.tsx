@@ -8,6 +8,7 @@ import { supabase } from "../../lib/supabase";
 import Cart from "../../components/menu/Cart";
 import toast from "react-hot-toast";
 import { useCart } from "../../context/CartContext";
+import { useTranslation } from "react-i18next";
 
 interface CartItem {
   id: string;
@@ -17,6 +18,8 @@ interface CartItem {
 }
 
 export const Menu = () => {
+
+  const { t } = useTranslation();
 
   const { isCartOpen, setIsCartOpen } = useCart();
 
@@ -50,8 +53,8 @@ export const Menu = () => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const handleCheckout = () => {
-    toast.success('Order placed successfully!');
+  const handleClear = () => {
+    toast.success(t('cart_clear_success'));
     setCartItems([]);
     setIsCartOpen(false);
   };
@@ -179,7 +182,7 @@ export const Menu = () => {
         onClose={() => setIsCartOpen(false)}
         onUpdateQuantity={updateCartItemQuantity}
         onRemoveItem={removeCartItem}
-        onCheckout={handleCheckout}
+        onClear={handleClear}
       />
     </Box>
   );

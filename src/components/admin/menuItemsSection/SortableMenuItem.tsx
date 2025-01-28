@@ -2,6 +2,7 @@ import { Pencil, Trash2, Upload } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { SortableMenuItemProps } from "../types/Menu.types";
+import { useTranslation } from "react-i18next";
 
 export const SortableMenuItem = ({
   item,
@@ -11,6 +12,8 @@ export const SortableMenuItem = ({
 }: SortableMenuItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: item.id });
+
+  const { t } = useTranslation();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -39,9 +42,9 @@ export const SortableMenuItem = ({
             </div>
           )}
           <div>
-            <h3 className="text-lg font-semibold">{item.name}</h3>
+            <h3 className="text-lg font-semibold">{t(`items.${item.name}`)}</h3>
             <p className="text-lg text-gray-400">
-              {categories.find((c) => c.id === item.category_id)?.name} -{" "}
+              {t(`categories.${categories.find((c) => c.id === item.category_id)?.name}`)} -{" "}
               {item.price} ֏
             </p>
           </div>
