@@ -27,8 +27,11 @@ import {
   EditMenuItemForm,
 } from "../../components/admin/forms";
 import { CategoryGroupList } from "../../components/admin/categorySection/CategoryGroupList";
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [newCategory, setNewCategory] = useState<
@@ -291,16 +294,16 @@ export default function AdminDashboard() {
     if (!editingCategory) return;
 
     const { error } = await supabase
-      .from('categories')
+      .from("categories")
       .update(editingCategory)
-      .eq('id', editingCategory.id);
+      .eq("id", editingCategory.id);
 
     if (error) {
-      toast.error('Error updating category');
+      toast.error("Error updating category");
       return;
     }
 
-    toast.success('Category updated successfully');
+    toast.success("Category updated successfully");
     setEditingCategory(null);
     fetchCategories();
   };
@@ -425,19 +428,20 @@ export default function AdminDashboard() {
                 handleDragEndCategory={handleDragEndCategory}
               >
                 {subCategories.map((category) =>
-                  editingCategory?.id == category.id ?
-                    (<EditCategoryForm
+                  editingCategory?.id == category.id ? (
+                    <EditCategoryForm
                       editingCategory={editingCategory}
                       setEditingCategory={setEditingCategory}
                       handleUpdateCategory={handleUpdateCategory}
-                    />) : (
-                      <SortableCategory
-                        key={category.id}
-                        category={category}
-                        onEdit={setEditingCategory}
-                        onDelete={handleDeleteCategory}
-                      />
-                    )
+                    />
+                  ) : (
+                    <SortableCategory
+                      key={category.id}
+                      category={category}
+                      onEdit={setEditingCategory}
+                      onDelete={handleDeleteCategory}
+                    />
+                  )
                 )}
               </CategoryGroupList>
             )
@@ -486,7 +490,9 @@ export default function AdminDashboard() {
 
             return (
               <div key={categoryId} className="bg-gray-800/50 p-4 rounded-lg">
-                <h3 className="text-xl font-semibold mb-4">{category.name}</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  {t(`categories.${category.name}`)}
+                </h3>
                 <DndContext
                   sensors={sensors}
                   collisionDetection={closestCenter}

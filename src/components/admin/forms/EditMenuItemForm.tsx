@@ -1,15 +1,16 @@
-// MenuItemEditor.tsx
-import React, { useState, useEffect } from 'react';
-import { Category, MenuItem } from '../types/Menu.types';
-
+import React, { useState, useEffect } from "react";
+import { Category, MenuItem } from "../types/Menu.types";
 
 interface MenuItemEditorProps {
   item: MenuItem;
   categories: Category[];
   handleUpdateMenuItem: (id: string) => void;
-  handleImageChange: (e: React.ChangeEvent<HTMLInputElement>, itemId: string) => void;
-  editingMenuItem,
-  setEditingMenuItem,
+  handleImageChange: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    itemId: string
+  ) => void;
+  editingMenuItem;
+  setEditingMenuItem;
   isUploading: boolean;
 }
 
@@ -20,7 +21,7 @@ export const EditMenuItemForm: React.FC<MenuItemEditorProps> = ({
   handleImageChange,
   editingMenuItem,
   setEditingMenuItem,
-  isUploading
+  isUploading,
 }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -32,7 +33,7 @@ export const EditMenuItemForm: React.FC<MenuItemEditorProps> = ({
     const { name, value } = e.target;
     setEditingMenuItem({
       ...editingMenuItem,
-      [name]: name === 'price' || name === 'rating' ? parseFloat(value) : value,
+      [name]: name === "price" || name === "rating" ? parseFloat(value) : value,
     });
   };
 
@@ -45,7 +46,7 @@ export const EditMenuItemForm: React.FC<MenuItemEditorProps> = ({
 
   const handleCancel = () => {
     setEditingMenuItem(null);
-    setImagePreview('');
+    setImagePreview("");
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +99,7 @@ export const EditMenuItemForm: React.FC<MenuItemEditorProps> = ({
         {(imagePreview || item.image) && (
           <div className="mt-2">
             <img
-              src={imagePreview || item.image || ''}
+              src={imagePreview || item.image || ""}
               alt={item.name}
               className="w-20 h-20 object-cover rounded"
             />
@@ -122,7 +123,7 @@ export const EditMenuItemForm: React.FC<MenuItemEditorProps> = ({
           disabled={isUploading}
           className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isUploading ? 'Uploading...' : 'Save'}
+          {isUploading ? "Uploading..." : "Save"}
         </button>
         <button
           onClick={handleCancel}
