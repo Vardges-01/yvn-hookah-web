@@ -14,14 +14,13 @@ interface MenuItemProps {
   };
   isFavorite: boolean;
   onToggleFavorite: (id: string) => void;
-  onAddToCart: () => void;
+  onAddToCart?: () => void;
 }
 
 const MenuItemCard = ({
   item,
   isFavorite,
   onToggleFavorite,
-  onAddToCart,
 }: MenuItemProps) => {
   const { rating } = item;
 
@@ -76,12 +75,12 @@ const MenuItemCard = ({
           <p className="text-blue-400 font-semibold text-base md:text-lg mb-3">
             {item.price} ֏
           </p>
-          <button
+          {/* <button
             onClick={onAddToCart}
             className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-full text-white transition-all transform hover:scale-105"
           >
             +
-          </button>
+          </button> */}
         </div>
         <Snackbar
           open={openSnackbar}

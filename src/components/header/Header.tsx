@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { FaPhone } from "react-icons/fa";
 import AboutModal from "../modals/aboutModal";
-import { ShoppingCart } from "lucide-react";
+// import { ShoppingCart } from "lucide-react";
 import LanguageSelector from "../admin/more/LanguageSelector";
 import { useTranslation } from "react-i18next";
 
 interface NavbarProps {
-  cartItemsCount: number;
-  onCartClick: () => void;
+  cartItemsCount?: number;
+  onCartClick?: () => void;
 }
 
-export default function Header({ cartItemsCount, onCartClick }: NavbarProps) {
+export default function Header({}: NavbarProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useTranslation(); 
 
@@ -33,7 +33,7 @@ export default function Header({ cartItemsCount, onCartClick }: NavbarProps) {
             >
              { t('about')}
             </button>
-            <button
+            {/* <button
               onClick={onCartClick}
               className="p-2 md:p-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all transform hover:scale-105 flex items-center justify-center relative"
             >
@@ -43,7 +43,7 @@ export default function Header({ cartItemsCount, onCartClick }: NavbarProps) {
                   {cartItemsCount}
                 </span>
               )}
-            </button>
+            </button> */}
             <a
               href="tel:+37499115211"
               className="p-2 md:p-4 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-all transform hover:scale-105 flex items-center justify-center"
