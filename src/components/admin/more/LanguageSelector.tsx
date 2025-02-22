@@ -23,7 +23,7 @@ const LanguageSelector = () => {
             <div className="relative">
                 {/* Selected Language Button */}
                 <button
-                    className="w-[34px] h-[34px] flex items-center justify-center rounded-full text-xl border-2 border-blue-500"
+                    className="w-[34px] h-[34px] md:w-[52px] md:h-[52px] flex items-center justify-center rounded-full text-xl border-2 border-blue-500"
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     {languages.find((lang) => lang.code === selectedLanguage)?.flag}
@@ -37,7 +37,7 @@ const LanguageSelector = () => {
                             .map((lang) => (
                                 <button
                                     key={lang.code}
-                                    className="w-10 h-10 flex items-center justify-center rounded-full text-xl border-2 border-gray-300 hover:border-blue-500"
+                                    className="w-[34px] h-[34px] md:w-[52px] md:h-[52px] flex items-center justify-center rounded-full text-xl border-2 border-gray-300 hover:border-blue-500"
                                     onClick={() => handleLanguageChange(lang.code)}
                                 >
                                     {lang.flag}

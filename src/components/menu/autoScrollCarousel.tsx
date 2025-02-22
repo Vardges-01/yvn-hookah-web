@@ -1,24 +1,26 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function SpecialOffers() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
+  const { t } = useTranslation();
 
   const offers = [
     {
       title: "Hookah Boom",
-      description: "Until 7:30 PM, all hookahs are at a special price - 4900֏.",
+      description: t('promo.hookah_boom'),
       bgColor: "from-blue-800 via-blue-700 to-blue-800",
     },
     {
       title: "Happy Hours",
-      description: "20% off on all Cocktails from 19:00 to 22:00",
+      description: t('promo.happy_hours'),
       bgColor: "from-purple-800 via-purple-700 to-purple-800",
     },
     {
       title: "Birthday Special",
-      description: "Free hookah for the birthday person!",
+      description: t('promo.birthday_special'),
       bgColor: "from-red-800 via-red-700 to-red-800",
     },
   ];
@@ -84,9 +86,8 @@ export default function SpecialOffers() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              currentSlide === index ? "bg-white w-4" : "bg-white/50"
-            }`}
+            className={`w-2 h-2 rounded-full transition-all ${currentSlide === index ? "bg-white w-4" : "bg-white/50"
+              }`}
           />
         ))}
       </div>

@@ -204,10 +204,15 @@
         "beefeater": "Бифитер",
         "hendricks": "Хендрикс"
     },
-    "descriptions":{
+    "descriptions": {
         "beer_set_3": "Джеркий, фисташки, копченый сыр",
         "beer_set_2": "Чипсы 3-х видов с соусом",
         "beer_set_1": "Гренки, луковые кольцо, охотничьи колбаски"
+    },
+    "promo": {
+        "hookah_boom": "Until 19:30, all hookahs are at a special price - 4900֏.",
+        "happy_hours": "20% off on all Cocktails from 19:00 to 22:00",
+        "birthday_special": "Free hookah for the birthday person!"
     },
     "about": "О нас",
     "your_order": "Ваш заказ",
@@ -215,5 +220,5 @@
     "total": "Итого",
     "clear": "Очистить",
     "cart_clear_success": "Корзина очистен!",
-    "added_to_cart":"добавлен в корзину"
+    "added_to_cart": "добавлен в корзину"
 }

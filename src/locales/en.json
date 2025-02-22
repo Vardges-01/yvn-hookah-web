@@ -205,10 +205,15 @@
         "beefeater": "Beefeater",
         "hendricks": "Hendricks"
     },
-    "descriptions":{
+    "descriptions": {
         "beer_set_3": "Jerky, pistachios, smoked cheese",
         "beer_set_2": "3 kinds of chips with sauce",
         "beer_set_1": "Croutons, onion rings, hunter sausages"
+    },
+    "promo": {
+        "hookah_boom": "Until 19:30, all hookahs are at a special price - 4900֏.",
+        "happy_hours": "20% off on all Cocktails from 19:00 to 22:00",
+        "birthday_special": "On your birthday, 10% discount on your bill and a hookah as a gift!"
     },
     "about": "About",
     "your_order": "Your order",
