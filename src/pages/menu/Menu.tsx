@@ -173,7 +173,7 @@ export const Menu = () => {
           menuItems={filteredMenuItems}
           favorites={favorites}
           setFavorites={setFavorites}
-          setCartItems={setCartItems}
+          // setCartItems={setCartItems}
         ></MenuList>
       </Box>
       <Cart

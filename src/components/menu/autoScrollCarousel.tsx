@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-// import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 export default function SpecialOffers() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -8,24 +7,19 @@ export default function SpecialOffers() {
 
   const offers = [
     {
-      title: "2 Large Pizzas",
-      description: "Get 2 large pizzas for 4500 ֏",
+      title: "Hookah Boom",
+      description: "Until 7:30 PM, all hookahs are at a special price - 4900֏.",
       bgColor: "from-blue-800 via-blue-700 to-blue-800",
     },
     {
       title: "Happy Hours",
-      description: "20% off on all drinks from 17:00 to 19:00",
+      description: "20% off on all Cocktails from 19:00 to 22:00",
       bgColor: "from-purple-800 via-purple-700 to-purple-800",
     },
     {
-      title: "Student Special",
-      description: "Show your student ID and get 15% off",
+      title: "Birthday Special",
+      description: "Free hookah for the birthday person!",
       bgColor: "from-red-800 via-red-700 to-red-800",
-    },
-    {
-      title: "Family Bundle",
-      description: "2 pizzas + 2 drinks + dessert for 8000 ֏",
-      bgColor: "from-green-800 via-green-700 to-green-800",
     },
   ];
 

@@ -6,8 +6,8 @@ const LanguageSelector = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const languages = [
-        { code: "en", flag: "🇬🇧" }, // UK flag emoji
-        { code: "ru", flag: "🇷🇺" }, // Russia flag emoji
+        { code: "en", flag: <img src="/en.png" alt="en" /> }, // En flag emoji
+        { code: "ru", flag: <img src="/ru.png" alt="ru" /> }, // Russia flag emoji
     ];
 
     const handleLanguageChange = (code) => {
@@ -23,7 +23,7 @@ const LanguageSelector = () => {
             <div className="relative">
                 {/* Selected Language Button */}
                 <button
-                    className="w-10 h-10 flex items-center justify-center rounded-full text-xl border-2 border-blue-500"
+                    className="w-[34px] h-[34px] flex items-center justify-center rounded-full text-xl border-2 border-blue-500"
                     onClick={() => setIsOpen(!isOpen)}
                 >
                     {languages.find((lang) => lang.code === selectedLanguage)?.flag}
