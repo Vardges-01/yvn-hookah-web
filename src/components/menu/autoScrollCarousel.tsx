@@ -10,17 +10,17 @@ export default function SpecialOffers() {
   const offers = [
     {
       title: "Hookah Boom",
-      description: t('promo.hookah_boom'),
+      description: "promo.hookah_boom",
       bgColor: "from-blue-800 via-blue-700 to-blue-800",
     },
     {
       title: "Happy Hours",
-      description: t('promo.happy_hours'),
+      description: "promo.happy_hours",
       bgColor: "from-purple-800 via-purple-700 to-purple-800",
     },
     {
       title: "Birthday Special",
-      description: t('promo.birthday_special'),
+      description: "promo.birthday_special",
       bgColor: "from-red-800 via-red-700 to-red-800",
     },
   ];
@@ -71,12 +71,12 @@ export default function SpecialOffers() {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="text-center py-16 md:py-24 transition-opacity duration-300">
+      <div className="text-center py-10 md:py-20 transition-opacity duration-300">
         <h2 className="text-4xl md:text-5xl font-bold mb-4 animate-pulse">
           {offers[currentSlide].title}
         </h2>
         <p className="text-lg md:text-xl text-gray-200">
-          {offers[currentSlide].description}
+          {t(offers[currentSlide].description)}
         </p>
       </div>
 

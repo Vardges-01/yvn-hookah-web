@@ -210,9 +210,9 @@
         "beer_set_1": "Гренки, луковые кольцо, охотничьи колбаски"
     },
     "promo": {
-        "hookah_boom": "Until 19:30, all hookahs are at a special price - 4900֏.",
-        "happy_hours": "20% off on all Cocktails from 19:00 to 22:00",
-        "birthday_special": "Free hookah for the birthday person!"
+        "hookah_boom": "До 19:30 все кальяны по специальной цене - 4900֏.",
+        "happy_hours": "С 19:00 до 22:00 скидка 20% на все коктейли.",
+        "birthday_special": "В день рождения скидка 10% на счет и кальян в подарок!"
     },
     "about": "О нас",
     "your_order": "Ваш заказ",
