@@ -35,12 +35,10 @@ export default function SpecialOffers() {
   };
 
   const handleTouchStart = (e) => {
-    e.preventDefault(); // Prevent scrolling
     touchStartX.current = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e) => {
-    e.preventDefault(); // Prevent scrolling
     touchEndX.current = e.touches[0].clientX;
   };
 
