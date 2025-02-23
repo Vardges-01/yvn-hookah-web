@@ -2,22 +2,30 @@ name: Development Publish Website to CPanel
 on:
   push:
     branches:
-     - dev
+      - dev
   workflow_dispatch:
 
 jobs:
-    build:
-      name: Build ⛏
-      runs-on: ubuntu-latest
-      steps:
+  build:
+    name: Build ⛏
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📢 Send TG message on build completion
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TG_CHAT_ID }}
+          token: ${{ secrets.TG_TOKEN }}
+          message: |
+            Start Build for ${{ github.repository }} on branch ${{ github.ref }} by ${{ github.actor }} completed.
+            Status: ${{ job.status }}
+            Commit message: ${{ github.event.commits[0].message }}
+            See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
-
       - name: Use Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-        
       - name: 🔨 Build Project
         run: |
           npm install --legacy-peer-deps
@@ -28,16 +36,16 @@ jobs:
           name: dist
           path: dist
 
-    deploy:
-      name: Deploy 🚀
-      needs: build
-      runs-on: ubuntu-latest
-      steps:
+  deploy:
+    name: Deploy 🚀
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
       - name: Download artifact
         uses: actions/download-artifact@v4
-        with: 
+        with:
           name: dist
           path: dist
       - name: 📂 Sync files
@@ -47,15 +55,14 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: dist/
-      - name: 📢 Send TG message on push
+      - name: 📢 Send TG message on deploy completion
         uses: appleboy/telegram-action@master
+        if: always() # Send even if deploy fails
         with:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_TOKEN }}
           message: |
-            ${{ github.actor }} deployed a DEV:
-            Commit message: ${{github.event.commits[0].message}}
-            
-            Repository: ${{ github.repository }}
-            
-            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}    
+            Deployment of ${{ github.repository }} to CPanel by ${{ github.actor }} completed.
+            Status: ${{ job.status }}
+            Commit message: ${{ github.event.commits[0].message }}
+            See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
