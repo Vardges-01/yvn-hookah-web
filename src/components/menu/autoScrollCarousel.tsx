@@ -5,17 +5,26 @@ import { supabase } from "../../lib/supabase";
 export default function SpecialOffers() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [promos, setPromos] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
   const { t } = useTranslation();
 
   const fetchPromos = async () => {
-    const { data } = await supabase
-      .from("promos")
-      .select("*")
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.from("promos").select("*");
 
-    setPromos(data || []);
-  }
+      if (error) {
+        console.error("Error fetching promos:", error);
+        // Handle error, maybe show a message to the user
+      }
+
+      setPromos(data || []);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % promos.length);
@@ -26,10 +35,12 @@ export default function SpecialOffers() {
   };
 
   const handleTouchStart = (e) => {
+    e.preventDefault(); // Prevent scrolling
     touchStartX.current = e.touches[0].clientX;
   };
 
   const handleTouchMove = (e) => {
+    e.preventDefault(); // Prevent scrolling
     touchEndX.current = e.touches[0].clientX;
   };
 
@@ -57,8 +68,16 @@ export default function SpecialOffers() {
     return () => clearInterval(timer);
   }, []);
 
+  if (loading) {
+    return <div className="text-center py-4">Loading...</div>; // Simple loading message
+  }
+
+  if (!promos.length) {
+    return <div className="text-center py-4">No promos available.</div>; // Message if no promos
+  }
+
   return (
-    promos.length && <div
+    <div
       className={`relative w-full h-48 md:h-64 bg-gradient-to-r from-purple-800 via-purple-700 to-purple-800 mb-2 overflow-hidden transition-all duration-500`}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
@@ -69,17 +88,18 @@ export default function SpecialOffers() {
           {promos[currentSlide]?.name}
         </h2>
         <p className="text-lg md:text-xl text-gray-200">
-          {`${promos[currentSlide] ? t(`promo.${promos[currentSlide].description}`) : ""}`}
+          {t(`promo.${promos[currentSlide]?.description}`)} {/* Optional chaining */}
         </p>
       </div>
 
-      {/* Slide indicators */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
         {promos.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${currentSlide === index ? "bg-white w-4" : "bg-white/50"}`}
+            className={`w-2 h-2 rounded-full transition-all ${
+              currentSlide === index ? "bg-white w-4" : "bg-white/50"
+            }`}
           />
         ))}
       </div>
