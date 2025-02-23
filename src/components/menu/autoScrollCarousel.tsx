@@ -26,12 +26,31 @@ export default function SpecialOffers() {
     }
   };
 
+  // const promos = [
+  //   {
+  //     name: "Hookah Boom",
+  //     description: 'hookah_boom',
+  //   },
+  //   {
+  //     name: "Happy Hours",
+  //     description: 'happy_hours',
+  //   },
+  //   {
+  //     name: "Birthday Special",
+  //     description: 'birthday_special',
+  //   },
+  // ];
+
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % promos.length);
+    if (promos.length > 0) {
+      setCurrentSlide((prev) => (prev + 1) % promos.length);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + promos.length) % promos.length);
+    if (promos.length > 0) {
+      setCurrentSlide((prev) => (prev - 1 + promos.length) % promos.length);
+    }
   };
 
   const handleTouchStart = (e) => {
@@ -62,16 +81,22 @@ export default function SpecialOffers() {
 
   useEffect(() => {
     fetchPromos();
+  }, []);
+  
+  useEffect(() => {
+    if (promos.length === 0) return; // Ждём, пока promos загрузится
+  
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [promos]);
 
+  // Loading
   if (loading) {
     return <div className="text-center py-4">Loading...</div>; // Simple loading message
   }
 
   if (!promos.length) {
-    return <div className="text-center py-4">No promos available.</div>; // Message if no promos
+    return <div className="text-center py-4">New Promos Comming Soon.</div>; // Message if no promos
   }
 
   return (
@@ -95,9 +120,8 @@ export default function SpecialOffers() {
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
-            className={`w-2 h-2 rounded-full transition-all ${
-              currentSlide === index ? "bg-white w-4" : "bg-white/50"
-            }`}
+            className={`w-2 h-2 rounded-full transition-all ${currentSlide === index ? "bg-white w-4" : "bg-white/50"
+              }`}
           />
         ))}
       </div>
