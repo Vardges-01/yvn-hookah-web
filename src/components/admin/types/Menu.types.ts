@@ -18,12 +18,18 @@ export interface MenuItem {
     categories?: Category;
 }
 
+export interface Promos {
+    id: string,
+    name: string,
+    desctiption: string,
+    backgtound: string
+}
+
 export interface SortableCategoryProps {
     category: Category;
     onEdit: (category: Category) => void;
     onDelete: (id: string) => void;
 }
-
 export interface SortableMenuItemProps {
     item: MenuItem;
     categories: Category[];

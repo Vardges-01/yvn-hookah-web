@@ -16,7 +16,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Category, MenuItem } from "../../components/admin/types/Menu.types";
+import { Category, MenuItem, Promos } from "../../components/admin/types/Menu.types";
 import { SortableCategory } from "../../components/admin/categorySection/SortableCategory";
 import { SortableMenuItem } from "../../components/admin/menuItemsSection/SortableMenuItem";
 import { SearchAndFilter, ShowHideList } from "../../components/admin/more";
@@ -28,12 +28,15 @@ import {
 } from "../../components/admin/forms";
 import { CategoryGroupList } from "../../components/admin/categorySection/CategoryGroupList";
 import { useTranslation } from "react-i18next";
+import { AddPromoForm } from "../../components/admin/forms/AddPromoForm";
+import { PromoList } from "../../components/admin/promo/PromoList";
 
 export default function AdminDashboard() {
   const { t } = useTranslation();
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [promos, setPromos] = useState<Promos[]>([]);
   const [newCategory, setNewCategory] = useState<
     Omit<Category, "id" | "created_at" | "position">
   >({
@@ -60,6 +63,8 @@ export default function AdminDashboard() {
   const [isUploading, setIsUploading] = useState(false);
 
   const [isCategoryListOpen, setIsCategoryListOpen] = useState(false);
+  const [isMenuItemsOpen, setIsMenuItemsOpen] = useState(false);
+  const [isPromosListOpen, setIsPromosListOpen] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
   const [itemSearch, setItemSearch] = useState("");
 
@@ -78,6 +83,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     fetchCategories();
     fetchMenuItems();
+    fetchPromos();
   }, []);
 
   const fetchCategories = async () => {
@@ -107,6 +113,17 @@ export default function AdminDashboard() {
       return;
     }
     setMenuItems(data);
+  };
+
+  const fetchPromos = async () => {
+    const { data, error } = await supabase
+      .from("promos").select('*')
+    if (error) {
+      toast.error("Error fetching Promos");
+      return;
+    }
+    console.log("DATA: ", data)
+    setPromos(data);
   };
 
   const handleDragEndCategory = async (event: DragEndEvent) => {
@@ -393,14 +410,28 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4 md:p-8">
       <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
-      {/* Categories Section */}
+      <ShowHideList
+        title={"Promos"}
+        isOpen={isPromosListOpen}
+        handleClick={setIsPromosListOpen}
+      />
+      {/* Promo Section */}
+      {isPromosListOpen && <div className="mb-12 space-y-8">
+        {/* Add Promo Form */}
+        <AddPromoForm isOpen={isPromosListOpen} fetchPromos={fetchPromos} />
 
-      <div className="mb-12 space-y-8">
-        <ShowHideList
-          title={"Categories"}
-          isOpen={isCategoryListOpen}
-          handleClick={setIsCategoryListOpen}
-        />
+        {/* Promo List */}
+        <PromoList isOpen={isPromosListOpen} promos={promos} />
+      </div>}
+
+      <ShowHideList
+        title={"Categories"}
+        isOpen={isCategoryListOpen}
+        handleClick={setIsCategoryListOpen}
+      />
+
+      {/* Categories Section */}
+      {isCategoryListOpen && <div className="mb-12 space-y-8">
 
         {/* Add Category Form */}
         <AddCategoryForm
@@ -417,41 +448,43 @@ export default function AdminDashboard() {
         />
 
         {/* Categories List */}
-        {isCategoryListOpen &&
-          Object.entries(groupedCategoryItems).map(
-            ([type, subCategories], index) => (
-              <CategoryGroupList
-                key={index}
-                type={type}
-                subCategories={subCategories}
-                sensors={sensors}
-                handleDragEndCategory={handleDragEndCategory}
-              >
-                {subCategories.map((category) =>
-                  editingCategory?.id == category.id ? (
-                    <EditCategoryForm
-                      editingCategory={editingCategory}
-                      setEditingCategory={setEditingCategory}
-                      handleUpdateCategory={handleUpdateCategory}
-                    />
-                  ) : (
-                    <SortableCategory
-                      key={category.id}
-                      category={category}
-                      onEdit={setEditingCategory}
-                      onDelete={handleDeleteCategory}
-                    />
-                  )
-                )}
-              </CategoryGroupList>
-            )
-          )}
-      </div>
+        {Object.entries(groupedCategoryItems).map(
+          ([type, subCategories], index) => (
+            <CategoryGroupList
+              key={index}
+              type={type}
+              subCategories={subCategories}
+              sensors={sensors}
+              handleDragEndCategory={handleDragEndCategory}
+            >
+              {subCategories.map((category) =>
+                editingCategory?.id == category.id ? (
+                  <EditCategoryForm
+                    editingCategory={editingCategory}
+                    setEditingCategory={setEditingCategory}
+                    handleUpdateCategory={handleUpdateCategory}
+                  />
+                ) : (
+                  <SortableCategory
+                    key={category.id}
+                    category={category}
+                    onEdit={setEditingCategory}
+                    onDelete={handleDeleteCategory}
+                  />
+                )
+              )}
+            </CategoryGroupList>
+          )
+        )}
+      </div>}
 
+      <ShowHideList
+        title={"Menu Items"}
+        isOpen={isMenuItemsOpen}
+        handleClick={setIsMenuItemsOpen}
+      />
       {/* Menu Items Section */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Menu Items</h2>
-
+      {isMenuItemsOpen && <div className="mb-12 space-y-8">
         {/* Add Menu Item Form */}
         <AddMenuItemForm
           newMenuItem={newMenuItem}
@@ -536,7 +569,7 @@ export default function AdminDashboard() {
             );
           })}
         </div>
-      </div>
+      </div>}
     </div>
   );
 }
