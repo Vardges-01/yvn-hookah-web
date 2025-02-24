@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { supabase } from "../../lib/supabase";
+import { supabase, useSupabaseStorage } from "../../lib/supabase";
 import {
   DndContext,
   closestCenter,
@@ -67,6 +67,8 @@ export default function AdminDashboard() {
   const [isPromosListOpen, setIsPromosListOpen] = useState(false);
   const [categorySearch, setCategorySearch] = useState("");
   const [itemSearch, setItemSearch] = useState("");
+
+  const { uploadFile, deleteFile } = useSupabaseStorage({ bucketName: 'menu-images' }); // Initialize
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -218,38 +220,6 @@ export default function AdminDashboard() {
     fetchCategories();
   };
 
-  const uploadImage = async (file: File): Promise<string> => {
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `menu-items/${fileName}`;
-
-    setIsUploading(true);
-    try {
-      const { error: uploadError } = await supabase.storage
-        .from("menu-images")
-        .upload(filePath, file);
-
-      if (uploadError) {
-        console.log(uploadError);
-        throw uploadError;
-      }
-
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from("menu-images").getPublicUrl(filePath);
-
-      return publicUrl;
-    } catch (error: any) {
-      if (error.error == "Bucket not found") {
-        // await createBucket();
-      }
-      console.error("Error uploading image:", error);
-      throw error;
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -266,7 +236,7 @@ export default function AdminDashboard() {
     try {
       let imageUrl = "";
       if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
+        imageUrl = await uploadFile(imageFile, setIsUploading);
       }
 
       const categoryItems = menuItems.filter(
@@ -333,7 +303,13 @@ export default function AdminDashboard() {
     try {
       let imageUrl = editingMenuItem.image;
       if (imageFile) {
-        imageUrl = await uploadImage(imageFile);
+        const oldIetem = menuItems.find(el => el.id == id);
+        imageUrl = await uploadFile(imageFile, setIsUploading);
+
+        if (oldIetem.image && !oldIetem.image.includes('default')) {
+          deleteFile(oldIetem.image)
+          console.log('IMAGE DELETE')
+        }
       }
 
       const { error } = await supabase
@@ -371,6 +347,12 @@ export default function AdminDashboard() {
 
   const handleDeleteMenuItem = async (id: string) => {
     const { error } = await supabase.from("menu_items").delete().eq("id", id);
+    const oldIetem = menuItems.find(el=>el.id == id);
+
+    if (oldIetem.image && !oldIetem.image.includes('default')) {
+      deleteFile(oldIetem.image)
+      console.log('IMAGE DELETE')
+    }
 
     if (error) {
       toast.error("Error deleting menu item");
