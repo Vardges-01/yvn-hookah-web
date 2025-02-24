@@ -82,10 +82,10 @@ export default function SpecialOffers() {
   useEffect(() => {
     fetchPromos();
   }, []);
-  
+
   useEffect(() => {
     if (promos.length === 0) return; // Ждём, пока promos загрузится
-  
+
     const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
   }, [promos]);
