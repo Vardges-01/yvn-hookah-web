@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { ControllerSetup } from '../../components/poker/ControllerSetup';
 import { Header } from '../../components/poker/Header';
-import { Timer } from '../../components/poker/Timer';
 import { SettingsModal } from '../../components/poker/SettingsModal';
-import TVConnect from '../../components/poker/TvConnect';
+import { Timer } from '../../components/poker/Timer';
+import ControlPanel from '../../components/poker/ControlPanel';
+
 
 interface Level {
     smallBlind: number;
@@ -11,7 +13,15 @@ interface Level {
     isBreak?: boolean;
 }
 
+interface TimerState {
+    isRunning: boolean;
+    currentLevel: number;
+    timeLeft: number;
+}
+
 function PokerTimer() {
+    const [isController, setIsController] = useState(false);
+    const [controllerCode, setControllerCode] = useState('');
     const [levels, setLevels] = useState<Level[]>([
         { smallBlind: 5, bigBlind: 10, duration: 10 },
         { smallBlind: 10, bigBlind: 20, duration: 10 },
@@ -27,6 +37,17 @@ function PokerTimer() {
     const [timeLeft, setTimeLeft] = useState(levels[0].duration * 60);
     const [isRunning, setIsRunning] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const mode = params.get('mode');
+        const code = params.get('code');
+
+        if (mode === 'controller' && code) {
+            setIsController(true);
+            setControllerCode(code);
+        }
+    }, []);
 
     useEffect(() => {
         let interval: any | undefined;
@@ -51,6 +72,32 @@ function PokerTimer() {
             if (interval) clearInterval(interval);
         };
     }, [isRunning, timeLeft, currentLevel, levels]);
+
+    useEffect(() => {
+        if (isController) {
+            const state: TimerState = {
+                isRunning,
+                currentLevel,
+                timeLeft,
+            };
+            localStorage.setItem(
+                `timer_state_${controllerCode}`,
+                JSON.stringify(state)
+            );
+        } else {
+            const interval = setInterval(() => {
+                const stateStr = localStorage.getItem(`timer_state_${controllerCode}`);
+                if (stateStr) {
+                    const state: TimerState = JSON.parse(stateStr);
+                    setIsRunning(state.isRunning);
+                    setCurrentLevel(state.currentLevel);
+                    // setTimeLeft(state.timeLeft);
+                }
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [isController, controllerCode, isRunning, currentLevel, timeLeft]);
 
     const handleReset = () => {
         setIsRunning(false);
@@ -79,10 +126,8 @@ function PokerTimer() {
         setTimeLeft(newLevels[currentLevel].duration * 60);
     };
 
-    const [isTvConnectOpen, setIsTvConnectOpen] = useState(false);
-
-    const handleTvConnect = () => {
-        setIsTvConnectOpen(!isTvConnectOpen);
+    if (!controllerCode) {
+        return <ControllerSetup onSetup={setControllerCode} />;
     }
 
     return (
@@ -92,16 +137,28 @@ function PokerTimer() {
                 onTogglePlay={() => setIsRunning(!isRunning)}
                 onReset={handleReset}
                 onOpenSettings={() => setIsSettingsOpen(true)}
-                onTvConnect={handleTvConnect}
+                controllerCode={controllerCode}
+                isController={isController}
             />
 
-            <Timer
-                timeLeft={timeLeft}
-                currentLevel={currentLevel}
-                blinds={levels[currentLevel]}
-                previousLevel={getPreviousLevel()}
-                nextLevel={getNextLevel()}
-            />
+            {!isController ? (
+                <Timer
+                    timeLeft={timeLeft}
+                    currentLevel={currentLevel}
+                    blinds={levels[currentLevel]}
+                    previousLevel={getPreviousLevel()}
+                    nextLevel={getNextLevel()}
+                />
+
+            ) : (
+                <ControlPanel
+                    isRunning={isRunning}
+                    onTogglePlay={() => setIsRunning(!isRunning)}
+                    onReset={handleReset}
+                    currentLevel={currentLevel}
+                    blinds={levels[currentLevel]}
+                />)
+            }
 
             <SettingsModal
                 isOpen={isSettingsOpen}
@@ -109,8 +166,6 @@ function PokerTimer() {
                 levels={levels}
                 onUpdateLevels={handleUpdateLevels}
             />
-
-            <TVConnect isOpen={isTvConnectOpen} onClose={handleTvConnect} onStartTimer={() =>{console.log(isRunning); setIsRunning(!isRunning)}}/>
         </div>
     );
 }

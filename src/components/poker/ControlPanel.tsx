@@ -1,41 +1,43 @@
-import { useState } from 'react';
-import io from 'socket.io-client';
+import { Pause, Play, RotateCcw } from "lucide-react";
 
-const ControlPanel = () => {
-  const [socketId, setSocketId] = useState('');
-  const [socket, setSocket] = useState(null);
+interface ControlPanelProps {
+  isRunning: boolean;
+  onTogglePlay: () => void;
+  onReset: () => void;
+  blinds: { smallBlind: number; bigBlind: number };
+  currentLevel: number;
+}
 
-  const connectToTV = () => {
-    const newSocket = io('http://localhost:3000'); // Замените на адрес вашего сервера
-    setSocket(newSocket);
-    alert('Подключение к телевизору...');
-    newSocket.emit('connect-to-tv', socketId);
-  };
-
-  const sendMessage = () => {
-    if (socket) {
-      socket.emit('message', 'Hello from control panel!');
-    }
-  };
-
-  const startTimer = () => {
-    if (socket) {
-        console.log('Starting timer...', socketId);
-        socket.emit('startTimer', socketId);
-      }
-  }
-
+const ControlPanel = ({
+  isRunning,
+  onTogglePlay,
+  onReset,
+  blinds,
+  currentLevel,
+}: ControlPanelProps) => {
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-6">
-      <input
-        type="text"
-        placeholder="Введите ID телевизора"
-        value={socketId}
-        onChange={(e) => setSocketId(e.target.value)}
-      />
-      <button onClick={connectToTV}>Подключиться</button>
-      <button onClick={sendMessage}>Отправить сообщение</button>
-      <button onClick={startTimer}>Start Timer</button>
+    <div className="flex-1 flex flex-col items-center justify-center gap-8 p-8">
+      <button
+        onClick={onTogglePlay}
+        className="w-48 h-48 flex items-center justify-center bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg transition-colors"
+      >
+        {isRunning ? (
+          <Pause className="w-24 h-24" />
+        ) : (
+          <Play className="w-24 h-24" />
+        )}
+      </button>
+
+      <button
+        onClick={onReset}
+        className="w-24 h-24 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors"
+      >
+        <RotateCcw className="w-12 h-12" />
+      </button>
+
+      <div className="text-2xl font-semibold mt-4">
+        Level {currentLevel + 1}: {blinds.smallBlind} / {blinds.bigBlind}
+      </div>
     </div>
   );
 };

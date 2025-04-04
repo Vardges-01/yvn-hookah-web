@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import PokerTimer from "../pages/poker/PokerTimer";
 import Header from "../components/header/Header";
-import ControlPanel from "../components/poker/ControlPanel";
 
 function ProtectedRoute({ children }) {
     const [session, setSession] = useState(null);
@@ -51,7 +50,6 @@ export default function Router() {
             </>
             } />
             <Route path='/poker' element={<PokerTimer />} />
-            <Route path='/poker/admin' element={<ControlPanel />} />
             <Route path='/admin' element={<AdminLogin />} />
             <Route
                 path="/admin/dashboard"
