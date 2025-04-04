@@ -4,6 +4,7 @@ import { Header } from '../../components/poker/Header';
 import { SettingsModal } from '../../components/poker/SettingsModal';
 import { Timer } from '../../components/poker/Timer';
 import ControlPanel from '../../components/poker/ControlPanel';
+import useSocket from '../../lib/socket';
 
 
 interface Level {
@@ -20,6 +21,8 @@ interface TimerState {
 }
 
 function PokerTimer() {
+    const socket = useSocket();
+
     const [isController, setIsController] = useState(false);
     const [controllerCode, setControllerCode] = useState('');
     const [levels, setLevels] = useState<Level[]>([
@@ -97,7 +100,7 @@ function PokerTimer() {
 
             return () => clearInterval(interval);
         }
-    }, [isController, controllerCode, isRunning, currentLevel, timeLeft]);
+    }, [isController, controllerCode, isRunning, currentLevel]);
 
     const handleReset = () => {
         setIsRunning(false);
@@ -127,14 +130,31 @@ function PokerTimer() {
     };
 
     if (!controllerCode) {
-        return <ControllerSetup onSetup={setControllerCode} />;
+        return <ControllerSetup onSetup={setControllerCode} socket={socket} />;
     }
+
+    const handleTogglePlay = () => {
+        setIsRunning((prev) => !prev);
+        socket.emit('togglePlay', controllerCode);
+    }
+
+    socket.on('connected', (code) => {
+        console.log(`Connected to controller with code: ${code}`); 
+    })
+
+    socket.on('timerControl', (command) => {
+        if (command === 'togglePlay') {
+          setIsRunning(!isRunning);
+        } else if (command === 'reset') {
+          handleReset();
+        }
+      });
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
             <Header
                 isRunning={isRunning}
-                onTogglePlay={() => setIsRunning(!isRunning)}
+                onTogglePlay={handleTogglePlay}
                 onReset={handleReset}
                 onOpenSettings={() => setIsSettingsOpen(true)}
                 controllerCode={controllerCode}
@@ -153,7 +173,7 @@ function PokerTimer() {
             ) : (
                 <ControlPanel
                     isRunning={isRunning}
-                    onTogglePlay={() => setIsRunning(!isRunning)}
+                    onTogglePlay={handleTogglePlay}
                     onReset={handleReset}
                     currentLevel={currentLevel}
                     blinds={levels[currentLevel]}
