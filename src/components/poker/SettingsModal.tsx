@@ -1,5 +1,5 @@
-import { X, Trash2, Plus, Coffee } from 'lucide-react';
 import { useState } from 'react';
+import { X, Trash2, Plus, Coffee } from 'lucide-react';
 
 interface Level {
   smallBlind: number;
@@ -13,6 +13,8 @@ interface SettingsModalProps {
   onClose: () => void;
   levels: Level[];
   onUpdateLevels: (levels: Level[]) => void;
+  presetName: string;
+  onSaveNewPreset: (name: string, levels: Level[]) => void;
 }
 
 export function SettingsModal({
@@ -20,8 +22,12 @@ export function SettingsModal({
   onClose,
   levels,
   onUpdateLevels,
+  presetName,
+  onSaveNewPreset,
 }: SettingsModalProps) {
   const [tempLevels, setTempLevels] = useState<Level[]>(levels);
+  const [newPresetName, setNewPresetName] = useState('');
+  const [isCreatingNew, setIsCreatingNew] = useState(false);
 
   const updateLevel = (
     index: number,
@@ -66,8 +72,12 @@ export function SettingsModal({
     }
   };
 
-  const saveSettings = () => {
-    onUpdateLevels(tempLevels);
+  const handleSave = () => {
+    if (isCreatingNew && newPresetName.trim()) {
+      onSaveNewPreset(newPresetName.trim(), tempLevels);
+    } else {
+      onUpdateLevels(tempLevels);
+    }
     onClose();
   };
 
@@ -77,7 +87,9 @@ export function SettingsModal({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
       <div className="bg-gray-800 rounded-2xl shadow-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold">Blind Structure Settings</h2>
+          <h2 className="text-xl font-bold">
+            {isCreatingNew ? 'Create New Preset' : `${presetName} - Blind Structure Settings`}
+          </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-700 rounded-full"
@@ -85,6 +97,21 @@ export function SettingsModal({
             <X className="w-6 h-6" />
           </button>
         </div>
+
+        {isCreatingNew && (
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Preset Name
+            </label>
+            <input
+              type="text"
+              value={newPresetName}
+              onChange={(e) => setNewPresetName(e.target.value)}
+              className="w-full px-3 py-2 bg-gray-700 rounded text-white"
+              placeholder="Enter preset name"
+            />
+          </div>
+        )}
 
         <div className="space-y-4">
           {tempLevels.map((level, index) => (
@@ -166,17 +193,27 @@ export function SettingsModal({
         </div>
 
         <div className="flex justify-between mt-6">
+          <div className="flex gap-4">
+            <button
+              onClick={addLevel}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+            >
+              <Plus className="w-5 h-5" /> Add Level
+            </button>
+            {!isCreatingNew && (
+              <button
+                onClick={() => setIsCreatingNew(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+              >
+                <Plus className="w-5 h-5" /> Save as New
+              </button>
+            )}
+          </div>
           <button
-            onClick={addLevel}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
-          >
-            <Plus className="w-5 h-5" /> Add Level
-          </button>
-          <button
-            onClick={saveSettings}
+            onClick={handleSave}
             className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold"
           >
-            Save Changes
+            {isCreatingNew ? 'Create Preset' : 'Save Changes'}
           </button>
         </div>
       </div>

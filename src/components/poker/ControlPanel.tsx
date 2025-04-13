@@ -6,6 +6,9 @@ interface ControlPanelProps {
   onReset: () => void;
   blinds: { smallBlind: number; bigBlind: number };
   currentLevel: number;
+  presets: any[];
+  selectedPresetId?: string;
+  onPresetChange?: (presetId: string) => void;
 }
 
 const ControlPanel = ({
@@ -14,9 +17,26 @@ const ControlPanel = ({
   onReset,
   blinds,
   currentLevel,
+  presets,
+  selectedPresetId,
+  onPresetChange,
 }: ControlPanelProps) => {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-8 p-8">
+      {presets && selectedPresetId && onPresetChange && (
+          <select
+            value={selectedPresetId}
+            onChange={(e) => onPresetChange(e.target.value)}
+            className="w-64 px-4 py-2 bg-gray-700 text-white rounded-lg text-center text-lg"
+            disabled={isRunning}
+          >
+            {presets.map((preset) => (
+              <option key={preset.id} value={preset.id}>
+                {preset.name}
+              </option>
+            ))}
+          </select>
+        )}
       <button
         onClick={onTogglePlay}
         className="w-48 h-48 flex items-center justify-center bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg transition-colors"
