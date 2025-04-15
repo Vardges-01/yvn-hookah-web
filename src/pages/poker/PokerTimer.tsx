@@ -93,7 +93,6 @@ function PokerTimer() {
   };
 
   const handleRoomJoined = (room: string) => {
-    console.log(showQR);
     setShowQR(false);
     console.log("Room joined:", room);
   };
@@ -349,7 +348,7 @@ function PokerTimer() {
   }
 
   if (!roomCode) {
-    return <ControllerSetup onSetup={handleSetup} />;
+    return <ControllerSetup />;
   }
 
   if (isLoading) {

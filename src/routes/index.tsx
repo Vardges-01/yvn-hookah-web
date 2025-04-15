@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import PokerTimer from "../pages/poker/PokerTimer";
 import Header from "../components/header/Header";
+import { ControllerSetup } from "../components/poker/ControllerSetup";
+import PokerDisplay from "../pages/poker/PokerDisplay";
+import PokerController from "../pages/poker/PokerController";
 
 function ProtectedRoute({ children }) {
     const [session, setSession] = useState(null);
@@ -49,7 +52,10 @@ export default function Router() {
                 <Menu />
             </>
             } />
-            <Route path='/poker' element={<PokerTimer />} />
+            {/* <Route path='/poker' element={<PokerTimer />} /> */}
+            <Route path="/poker" element={<ControllerSetup />} />
+            <Route path="/poker/display" element={<PokerDisplay />} />
+            <Route path="/poker/controller" element={<PokerController />} />
             <Route path='/admin' element={<AdminLogin />} />
             <Route
                 path="/admin/dashboard"
