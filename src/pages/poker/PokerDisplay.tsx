@@ -1,127 +1,122 @@
 // src/pages/PokerDisplay.tsx
-import { useEffect, useState, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Timer } from '../../components/poker/Timer';
-import { Header } from '../../components/poker/Header';
-import usePokerSocket from '../../hooks/usePokerSocket';
-import { BlindPreset, Level } from '../../types/blind.types';
-import useTimerAudio from '../../hooks/useTimerAudio';
-import { useBlindPresets } from '../../hooks/useBlindPresets';
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Timer } from "../../components/poker/Timer";
+import { Header } from "../../components/poker/Header";
+import usePokerSocket from "../../hooks/usePokerSocket";
+import { useBlindPresets } from "../../hooks/useBlindPresets";
+import useTimer from "../../hooks/useTimer";
 
 function PokerDisplay() {
-    const [searchParams] = useSearchParams();
-    const [roomCode, setRoomCode] = useState(searchParams.get('code'));
-    const { presets, loading } = useBlindPresets();
+  const [searchParams] = useSearchParams();
+  const [roomCode, setRoomCode] = useState(searchParams.get("code"));
 
-    const [selectedPresetId, setSelectedPresetId] = useState<string>('');
-    const [currentLevel, setCurrentLevel] = useState(0);
-    const [timeLeft, setTimeLeft] = useState(0);
-    const [isRunning, setIsRunning] = useState(false);
-    const [showQR, setShowQR] = useState(false);
-    const presetsRef = useRef<BlindPreset[]>([]);
+  const { presets, reload } = useBlindPresets();
+  const [selectedPresetId, setSelectedPresetId] = useState<string>("");
+//   const [lastSelectedPresetId, setLastSelectedPresetId] = useState<string>("");
+  const [currentLevel, setCurrentLevel] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [showQR, setShowQR] = useState(false);
 
-    const { tickAudio, gongAudio } = useTimerAudio();
+  console.log("Selected Preset ID:", selectedPresetId);
 
-    const handleRoomCreated = (roomId: string) => {
-        setRoomCode(roomId);
-        const url = new URL(window.location.href);
-        url.searchParams.set("code", roomId);
-        window.history.pushState({}, "", url.toString());
-    };
+  const selectedPreset = presets.find((p) => p.id === selectedPresetId);
+  const levels = selectedPreset?.levels || [];
 
-    usePokerSocket(roomCode, {
-        onRoomCreated: handleRoomCreated,
-        onTogglePlay: () => setIsRunning((prev) => !prev),
-        onReset: () => {
-            setIsRunning(false);
-            setCurrentLevel(0);
-            setTimeLeft(presetsRef.current[0]?.levels[0]?.duration * 60 || 0);
-        },
-        onPresetChanged: (presetId) => {
-            setSelectedPresetId(presetId);
-            setCurrentLevel(0);
-            const found = presetsRef.current.find((p) => p.id === presetId);
-            if (found) setTimeLeft(found.levels[0]?.duration * 60 || 0);
-        },
-    });
+  const { timeLeft, setTimeLeft } = useTimer({
+    levels,
+    currentLevel,
+    isRunning,
+    onLevelAdvance: (nextLevel) => setCurrentLevel(nextLevel),
+    onTimerStop: () => setIsRunning(false),
+  });
 
-    const getPreviousLevel = () => {
-        if (currentLevel > 0) {
-            const prev = selectedPreset?.levels[currentLevel - 1];
-            return prev?.isBreak ? 'BREAK' : `${prev?.smallBlind} / ${prev?.bigBlind}`;
-        }
-        return '';
-    };
+  const handleRoomCreated = (roomId: string) => {
+    setRoomCode(roomId);
+    const url = new URL(window.location.href);
+    url.searchParams.set("code", roomId);
+    window.history.pushState({}, "", url.toString());
+  };
 
-    const getNextLevel = () => {
-        if (currentLevel < (selectedPreset?.levels.length || 0) - 1) {
-            const next = selectedPreset?.levels[currentLevel + 1];
-            return next?.isBreak ? 'BREAK' : `${next?.smallBlind} / ${next?.bigBlind}`;
-        }
-        return 'FINAL';
-    };
+  usePokerSocket(roomCode, {
+    onRoomCreated: handleRoomCreated,
+    onTogglePlay: () => setIsRunning((prev) => !prev),
+    onReset: () => {
+      setIsRunning(false);
+      setCurrentLevel(0);
+      setTimeLeft(levels[0]?.duration * 60 || 0);
+    },
+    onPresetChanged: (presetId) => {
+      setSelectedPresetId(presetId);
+      reload();
+      setCurrentLevel(0);
+      const found = presets.find((p) => p.id === presetId);
+      if (found) setTimeLeft(found.levels[0]?.duration * 60 || 0);
+    },
+    onAdjustTime: (delta) => {
+      console.log("Adjusting time by:", delta);
+      setTimeLeft((prev) => Math.max(prev + delta, 0));
+    },
+  });
 
-    const selectedPreset = presets.find((p) => p.id === selectedPresetId);
+  useEffect(() => {
+    if (presets.length > 0 && !selectedPresetId) {
+      if (selectedPresetId === "") {
+        setSelectedPresetId(presets[0].id);
+      }
+      setTimeLeft(presets[0].levels[0].duration * 60);
+    }
+  }, [presets]);
 
-    useEffect(() => {
-        presetsRef.current = presets;
-    }, [presets]);
+  const getPreviousLevel = () => {
+    if (currentLevel > 0) {
+      const prev = levels[currentLevel - 1];
+      return prev?.isBreak
+        ? "BREAK"
+        : `${prev?.smallBlind} / ${prev?.bigBlind}`;
+    }
+    return "";
+  };
 
-    useEffect(() => {
-        if (isRunning && timeLeft > 0) {
-            const interval = setInterval(() => {
-                setTimeLeft((prevTime) => {
-                    if (prevTime <= 7 && prevTime > 1 && tickAudio.current) {
-                        tickAudio.current.pause();
-                        tickAudio.current.currentTime = 0;
-                        tickAudio.current.play();
-                    }
-                    if (prevTime === 2 && gongAudio.current) {
-                        tickAudio.current?.pause();
-                        gongAudio.current.pause();
-                        gongAudio.current.currentTime = 0;
-                        gongAudio.current.play();
-                    }
-                    if (prevTime <= 1) {
-                        if (currentLevel < (selectedPreset?.levels.length || 0) - 1) {
-                            setCurrentLevel((prev) => prev + 1);
-                            return selectedPreset?.levels[currentLevel + 1].duration * 60 || 0;
-                        }
-                        setIsRunning(false);
-                        return 0;
-                    }
-                    return prevTime - 1;
-                });
-            }, 1000);
+  const getNextLevel = () => {
+    if (currentLevel < levels.length - 1) {
+      const next = levels[currentLevel + 1];
+      return next?.isBreak
+        ? "BREAK"
+        : `${next?.smallBlind} / ${next?.bigBlind}`;
+    }
+    return "FINAL";
+  };
 
-            return () => clearInterval(interval);
-        }
-    }, [isRunning, timeLeft, currentLevel, selectedPreset]);
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+      <Header
+        isRunning={isRunning}
+        onTogglePlay={() => {}}
+        onReset={() => {}}
+        onOpenSettings={() => {}}
+        controllerCode={roomCode || ""}
+        isController={false}
+        showQR={showQR}
+        setShowQR={setShowQR}
+      />
+      <div className="text-center text-4xl font-bold mt-8">
+        <span className="border-2 py-2 px-10 rounded-xl">
+          {selectedPreset?.name}
+        </span>
+      </div>
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
-            <Header
-                isRunning={isRunning}
-                onTogglePlay={() => { }}
-                onReset={() => { }}
-                onOpenSettings={() => { }}
-                controllerCode={roomCode || ''}
-                isController={false}
-                showQR={showQR}
-                setShowQR={setShowQR}
-            />
-
-            {selectedPreset && (
-                <Timer
-                    timeLeft={timeLeft}
-                    currentLevel={currentLevel}
-                    blinds={selectedPreset.levels[currentLevel]}
-                    previousLevel={getPreviousLevel()}
-                    nextLevel={getNextLevel()}
-                />
-            )}
-        </div>
-    );
+      {selectedPreset && (
+        <Timer
+          timeLeft={timeLeft}
+          currentLevel={currentLevel}
+          blinds={levels[currentLevel]}
+          previousLevel={getPreviousLevel()}
+          nextLevel={getNextLevel()}
+        />
+      )}
+    </div>
+  );
 }
 
 export default PokerDisplay;

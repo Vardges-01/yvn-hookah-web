@@ -9,6 +9,7 @@ interface ControlPanelProps {
   presets: any[];
   selectedPresetId?: string;
   onPresetChange?: (presetId: string) => void;
+  onAdjustTime?: (delta: number) => void;
 }
 
 const ControlPanel = ({
@@ -20,9 +21,10 @@ const ControlPanel = ({
   presets,
   selectedPresetId,
   onPresetChange,
+  onAdjustTime
 }: ControlPanelProps) => {
   return (
-    <div className="flex-1 flex flex-col items-center justify-center gap-8 p-8">
+    <div className="flex-1 flex flex-col items-center justify-start gap-8 p-8">
       {presets && selectedPresetId && onPresetChange && (
         <select
           value={selectedPresetId}
@@ -39,9 +41,22 @@ const ControlPanel = ({
       )}
 
       <div className="flex justify-center items-center gap-4">
-        <button className="w-24 h-24 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors" onClick={() => /*socket.emit('adjustTime', { room: roomCode, delta: 60 })*/ console.log('+1 мин')}>
-          +1 мин
-        </button>
+        <div className="flex flex-col gap-3">
+          <button
+            className="w-20 h-20 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors"
+            onClick={() => onAdjustTime(-60)}
+          >
+            -1 min
+          </button>
+          <button
+            className="w-20 h-20 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors"
+            onClick={() =>
+              console.log("-1 lvl")
+            }
+          >
+            -1 lvl
+          </button>
+        </div>
         <button
           onClick={onTogglePlay}
           className="w-40 h-40 flex items-center justify-center bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg transition-colors"
@@ -52,9 +67,23 @@ const ControlPanel = ({
             <Play className="w-24 h-24" />
           )}
         </button>
-        <button className="w-20 h-20 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors" onClick={() => /*socket.emit('adjustTime', { room: roomCode, delta: -60 })*/ console.log('-1 мин')}>
-          -1 мин
-        </button>
+        <div className="flex flex-col gap-3">
+          <button
+            className="w-20 h-20 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors"
+            onClick={() => onAdjustTime(60)}
+          >
+            +1 min
+          </button>
+          <button
+            className="w-20 h-20 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors"
+            onClick={() =>
+              /*socket.emit('adjustTime', { room: roomCode, delta: 60 })*/
+              console.log("-1 min")
+            }
+          >
+            +1 lvl
+          </button>
+        </div>
       </div>
 
       <button

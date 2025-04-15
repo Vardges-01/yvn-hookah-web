@@ -7,6 +7,7 @@ interface UsePokerSocketOptions {
     onTogglePlay?: () => void;
     onReset?: () => void;
     onPresetChanged?: (presetId: string) => void;
+    onAdjustTime?: (delta: number) => void; //TODO
 }
 
 export default function usePokerSocket(
@@ -47,10 +48,17 @@ export default function usePokerSocket(
                 options.onPresetChanged?.(presetId);
             });
         }
+        
+        if(options.onAdjustTime) {
+            socket.on('adjustTime', (delta: number) => {
+                options.onAdjustTime?.(delta);
+            });
+        }
 
         return () => {
             socket.off('timerControl');
             socket.off('presetChanged');
+            socket.off('adjustTime');
         };
     }, [socket, roomCode]);
 

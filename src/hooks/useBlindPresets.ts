@@ -48,6 +48,9 @@ export function useBlindPresets() {
 
   useEffect(() => {
     loadPresets();
+    console.log("AAAAAAAAAAAAAAAA")
+    console.log(presets)
+    console.log("AAAAAAAAAAAAAAAA")
   }, []);
 
   return {

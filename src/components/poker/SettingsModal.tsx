@@ -1,7 +1,6 @@
 // src/components/poker/SettingsModal.tsx
 import { useEffect, useState } from 'react';
 import { X, Trash2, Plus, Coffee } from 'lucide-react';
-import { use } from 'i18next';
 
 interface Level {
   smallBlind: number;
@@ -28,10 +27,6 @@ export function SettingsModal({
   onSaveNewPreset,
 }: SettingsModalProps) {
   const [tempLevels, setTempLevels] = useState<Level[]>(levels);
-  console.log("AAAAAAAAAAAAAA")
-  console.log(tempLevels)
-  console.log(levels)
-  console.log("AAAAAAAAAAAAAA")
 
   const [newPresetName, setNewPresetName] = useState('');
   const [isCreatingNew, setIsCreatingNew] = useState(false);

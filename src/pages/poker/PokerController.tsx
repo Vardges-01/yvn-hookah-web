@@ -47,6 +47,7 @@ function PokerController() {
             is_break: level.isBreak || false,
         }));
         await supabase.from('levels').insert(levelsToInsert);
+        socket.emit('changePreset', { room: roomCode, presetId });
         await reloadPresets();
     };
 
@@ -89,6 +90,10 @@ function PokerController() {
         }
     };
 
+    const handleAdjustTime = (delta: number) => {
+        socket.emit('adjustTime', { room: roomCode, delta });
+    }
+
     useEffect(() => {
         presetsRef.current = presets;
         if (presets.length > 0 && !selectedPresetId) {
@@ -119,6 +124,7 @@ function PokerController() {
                     presets={presets}
                     selectedPresetId={selectedPresetId}
                     onPresetChange={handlePresetChange}
+                    onAdjustTime={handleAdjustTime}
                 />
             )}
 

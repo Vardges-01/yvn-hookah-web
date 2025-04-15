@@ -26,50 +26,63 @@ export function Header({
 
   return (
     <div className="bg-gray-800 p-4 flex justify-between items-center">
-      <div className="flex items-center gap-4">
         <img
           src="https://dev.yvnhookah.am/yvn-logo.svg"
           alt="YVN Lounge"
-          className="h-13 md:h-14 hover:scale-105 transition-transform"
+          className="h-12 md:h-12 hover:scale-105 transition-transform"
         />
-      </div>
-      <div className="flex gap-4">
-        {!isController && (
-          <>
-            <span className="text-sm bg-gray-700 px-3 py-1 rounded">
-              Code: {controllerCode}
-            </span>
-            <button
-              onClick={() => setShowQR((prev) => !prev)}
-              className="flex p-2 gap-2 hover:bg-gray-600 rounded-lg"
-              title="Control from phone"
-            >
-              <Smartphone className="w-6 h-6" />
-              <div>Connect Phone</div>
-            </button>
-          </>
-        )}
-        <button
-          onClick={onOpenSettings}
-          disabled={isRunning}
-          className="p-2 hover:bg-gray-600 rounded-lg disabled:opacity-50"
-        >
-          <Settings className="w-6 h-6" />
-        </button>
-        <button
-          onClick={onTogglePlay}
-          className="p-2 hover:bg-gray-600 rounded-lg"
-        >
-          {isRunning ? (
-            <Pause className="w-6 h-6" />
-          ) : (
-            <Play className="w-6 h-6" />
-          )}
-        </button>
-        <button onClick={onReset} className="p-2 hover:bg-gray-600 rounded-lg">
-          <RotateCcw className="w-6 h-6" />
-        </button>
-      </div>
+      {isController && (
+        <div className="flex gap-4">
+          <span className="text-sm content-center bg-gray-700 px-3 py-1 rounded">
+            Code: {controllerCode}
+          </span>
+          <button
+            onClick={onOpenSettings}
+            disabled={isRunning}
+            className="p-2 hover:bg-gray-600 rounded-lg disabled:opacity-50"
+          >
+            <Settings className="w-6 h-6" />
+          </button>
+        </div>
+      )}
+      {!isController && (
+        <div className="flex gap-4">
+          <span className="text-sm content-center bg-gray-700 px-3 py-1 rounded">
+            Code: {controllerCode}
+          </span>
+          <button
+            onClick={() => setShowQR((prev) => !prev)}
+            className="flex p-2 gap-2 hover:bg-gray-600 rounded-lg"
+            title="Control from phone"
+          >
+            <Smartphone className="w-6 h-6" />
+            <div>Connect Phone</div>
+          </button>
+          <button
+            onClick={onOpenSettings}
+            disabled={isRunning}
+            className="p-2 hover:bg-gray-600 rounded-lg disabled:opacity-50"
+          >
+            <Settings className="w-6 h-6" />
+          </button>
+          <button
+            onClick={onTogglePlay}
+            className="p-2 hover:bg-gray-600 rounded-lg"
+          >
+            {isRunning ? (
+              <Pause className="w-6 h-6" />
+            ) : (
+              <Play className="w-6 h-6" />
+            )}
+          </button>
+          <button
+            onClick={onReset}
+            className="p-2 hover:bg-gray-600 rounded-lg"
+          >
+            <RotateCcw className="w-6 h-6" />
+          </button>
+        </div>
+      )}
       {showQR && (
         <div
           onClick={() => setShowQR((prev) => !prev)}
