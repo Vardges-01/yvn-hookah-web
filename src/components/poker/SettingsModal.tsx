@@ -1,4 +1,5 @@
-import { useState } from 'react';
+// src/components/poker/SettingsModal.tsx
+import { useEffect, useState } from 'react';
 import { X, Trash2, Plus, Coffee } from 'lucide-react';
 
 interface Level {
@@ -26,9 +27,15 @@ export function SettingsModal({
   onSaveNewPreset,
 }: SettingsModalProps) {
   const [tempLevels, setTempLevels] = useState<Level[]>(levels);
+
   const [newPresetName, setNewPresetName] = useState('');
   const [isCreatingNew, setIsCreatingNew] = useState(false);
 
+  useEffect(() => {
+    setTempLevels(levels);
+  }
+  , [levels]);
+  
   const updateLevel = (
     index: number,
     field: keyof Level,
@@ -37,8 +44,7 @@ export function SettingsModal({
     const newLevels = [...tempLevels];
     newLevels[index] = {
       ...newLevels[index],
-      [field]:
-        typeof value === 'boolean' ? value : parseInt(value as string) || 0,
+      [field]: typeof value === 'boolean' ? value : parseInt(value as string) || 0,
     };
     setTempLevels(newLevels);
   };
@@ -84,16 +90,13 @@ export function SettingsModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-gray-800 rounded-2xl shadow-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg sm:max-w-2xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">
             {isCreatingNew ? 'Create New Preset' : `${presetName} - Blind Structure Settings`}
           </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-700 rounded-full"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-700 rounded-full">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -107,7 +110,7 @@ export function SettingsModal({
               type="text"
               value={newPresetName}
               onChange={(e) => setNewPresetName(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-700 rounded text-white"
+              className="w-full px-4 py-3 text-lg bg-gray-700 rounded text-white"
               placeholder="Enter preset name"
             />
           </div>
@@ -126,16 +129,12 @@ export function SettingsModal({
                 {!level.isBreak ? (
                   <>
                     <div>
-                      <label className="text-sm text-gray-300">
-                        Small Blind
-                      </label>
+                      <label className="text-sm text-gray-300">Small Blind</label>
                       <input
                         type="number"
                         value={level.smallBlind}
-                        onChange={(e) =>
-                          updateLevel(index, 'smallBlind', e.target.value)
-                        }
-                        className="w-full px-3 py-2 bg-gray-800 rounded text-white"
+                        onChange={(e) => updateLevel(index, 'smallBlind', e.target.value)}
+                        className="w-full px-4 py-2 text-base bg-gray-800 rounded text-white"
                       />
                     </div>
                     <div>
@@ -143,10 +142,8 @@ export function SettingsModal({
                       <input
                         type="number"
                         value={level.bigBlind}
-                        onChange={(e) =>
-                          updateLevel(index, 'bigBlind', e.target.value)
-                        }
-                        className="w-full px-3 py-2 bg-gray-800 rounded text-white"
+                        onChange={(e) => updateLevel(index, 'bigBlind', e.target.value)}
+                        className="w-full px-4 py-2 text-base bg-gray-800 rounded text-white"
                       />
                     </div>
                   </>
@@ -157,16 +154,12 @@ export function SettingsModal({
                   </div>
                 )}
                 <div>
-                  <label className="text-sm text-gray-300">
-                    Duration (min)
-                  </label>
+                  <label className="text-sm text-gray-300">Duration (min)</label>
                   <input
                     type="number"
                     value={level.duration}
-                    onChange={(e) =>
-                      updateLevel(index, 'duration', e.target.value)
-                    }
-                    className="w-full px-3 py-2 bg-gray-800 rounded text-white"
+                    onChange={(e) => updateLevel(index, 'duration', e.target.value)}
+                    className="w-full px-4 py-2 text-base bg-gray-800 rounded text-white"
                   />
                 </div>
               </div>
@@ -192,18 +185,18 @@ export function SettingsModal({
           ))}
         </div>
 
-        <div className="flex justify-between mt-6">
-          <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row justify-between mt-6 gap-4 sm:gap-0">
+          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <button
               onClick={addLevel}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-lg"
             >
               <Plus className="w-5 h-5" /> Add Level
             </button>
             {!isCreatingNew && (
               <button
                 onClick={() => setIsCreatingNew(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg"
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg text-lg"
               >
                 <Plus className="w-5 h-5" /> Save as New
               </button>
@@ -211,7 +204,7 @@ export function SettingsModal({
           </div>
           <button
             onClick={handleSave}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold"
+            className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-lg"
           >
             {isCreatingNew ? 'Create Preset' : 'Save Changes'}
           </button>
