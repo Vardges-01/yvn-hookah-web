@@ -25,61 +25,66 @@ export function Header({
   const currentUrl = window.location.origin;
 
   return (
-    <div className="bg-gray-800 p-4 flex justify-between items-center">
+    <div className="bg-gradient-to-r from-black via-blue-950 to-black p-4 flex justify-between items-center border-b border-blue-800 shadow-lg">
+      <div className="flex justify-between items-center">
         <img
-          src="https://dev.yvnhookah.am/yvn-logo.svg"
-          alt="YVN Lounge"
-          className="h-12 md:h-12 hover:scale-105 transition-transform"
+          src="/poker-logo.png"
+          alt="Yerevan Poker Tournament"
+          className="h-14"
         />
+        <span className="text-xl text-white uppercase tracking-widest pl-4 font-black">
+          Yerevan Poker Tournament
+        </span>
+      </div>
       {isController && (
-        <div className="flex gap-4">
-          <span className="text-sm content-center bg-gray-700 px-3 py-1 rounded">
+        <div className="flex gap-4 items-center">
+          <span className="text-base content-center bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2 rounded-lg font-bold text-white shadow-lg">
             Code: {controllerCode}
           </span>
           <button
             onClick={onOpenSettings}
             disabled={isRunning}
-            className="p-2 hover:bg-gray-600 rounded-lg disabled:opacity-50"
+            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg disabled:opacity-50 transition-all duration-200 text-blue-300 hover:text-white"
           >
-            <Settings className="w-6 h-6" />
+            <Settings className="w-7 h-7" />
           </button>
         </div>
       )}
       {!isController && (
-        <div className="flex gap-4">
-          <span className="text-sm content-center bg-gray-700 px-3 py-1 rounded">
+        <div className="flex gap-3 items-center">
+          <span className="text-base content-center bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2 rounded-lg font-bold text-white shadow-lg">
             Code: {controllerCode}
           </span>
           <button
             onClick={() => setShowQR((prev) => !prev)}
-            className="flex p-2 gap-2 hover:bg-gray-600 rounded-lg"
+            className="flex p-2 gap-2 hover:bg-blue-700 hover:shadow-lg rounded-lg transition-all duration-200 text-blue-300 hover:text-white"
             title="Control from phone"
           >
             <Smartphone className="w-6 h-6" />
-            <div>Connect Phone</div>
+            <div className="font-semibold hidden sm:block">Connect</div>
           </button>
           <button
             onClick={onOpenSettings}
             disabled={isRunning}
-            className="p-2 hover:bg-gray-600 rounded-lg disabled:opacity-50"
+            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg disabled:opacity-50 transition-all duration-200 text-blue-300 hover:text-white"
           >
-            <Settings className="w-6 h-6" />
+            <Settings className="w-7 h-7" />
           </button>
           <button
             onClick={onTogglePlay}
-            className="p-2 hover:bg-gray-600 rounded-lg"
+            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg transition-all duration-200 text-emerald-400 hover:text-emerald-300"
           >
             {isRunning ? (
-              <Pause className="w-6 h-6" />
+              <Pause className="w-7 h-7" />
             ) : (
-              <Play className="w-6 h-6" />
+              <Play className="w-7 h-7" />
             )}
           </button>
           <button
             onClick={onReset}
-            className="p-2 hover:bg-gray-600 rounded-lg"
+            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg transition-all duration-200 text-red-400 hover:text-red-300"
           >
-            <RotateCcw className="w-6 h-6" />
+            <RotateCcw className="w-7 h-7" />
           </button>
         </div>
       )}
@@ -89,7 +94,7 @@ export function Header({
           className=" bg-slate-900 bg-opacity-80 fixed inset-0 flex items-center justify-center z-50"
         >
           <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg text-center items-center gap-3">
-            <div className="text-black text-lg mb-2">
+            <div className="text-black text-lg mb-2 font-semibold">
               Scan to control from phone
             </div>
             <QRCodeSVG
@@ -98,7 +103,7 @@ export function Header({
               }
               size={200}
             />
-            <div className="text-black text-lg mb-2">
+            <div className="text-black text-lg mb-2 font-bold">
               CODE: {controllerCode}
             </div>
           </div>

@@ -1,6 +1,7 @@
 // src/pages/PokerController.tsx
 import { useEffect, useState, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import ControlPanel from '../../components/poker/ControlPanel';
 import { SettingsModal } from '../../components/poker/SettingsModal';
 import { supabase } from '../../lib/supabase';
@@ -11,7 +12,9 @@ import { useBlindPresets } from '../../hooks/useBlindPresets';
 
 function PokerController() {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const roomCode = searchParams.get('code');
+    const [inputCode, setInputCode] = useState('');
 
     const [selectedPresetId, setSelectedPresetId] = useState<string>('');
     const [isRunning, setIsRunning] = useState(false);
@@ -19,8 +22,61 @@ function PokerController() {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [showQR, setShowQR] = useState(false);
 
-    const { presets, reload: reloadPresets } = useBlindPresets();
+    const { presets, reload: reloadPresets, loading } = useBlindPresets();
     const presetsRef = useRef<BlindPreset[]>([]);
+
+    const handleCodeSubmit = () => {
+        if (inputCode.trim()) {
+            navigate(`/poker/controller?code=${inputCode.trim()}`);
+        }
+    };
+
+    if (!roomCode) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center p-4">
+                <div className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+                    <button
+                        onClick={() => navigate('/poker')}
+                        className="flex items-center gap-2 mb-6 text-gray-400 hover:text-white transition-colors"
+                    >
+                        <ArrowLeft className="w-5 h-5" />
+                        Back
+                    </button>
+                    <div className="text-center">
+                        <h2 className="text-2xl font-bold mb-8">Enter Display Code</h2>
+                        <div className="space-y-6">
+                            <div>
+                                <label className="block text-sm text-gray-400 mb-2">
+                                    Display Code (digits only)
+                                </label>
+                                <input
+                                    type="text"
+                                    value={inputCode}
+                                    onChange={(e) => setInputCode(e.target.value.replace(/[^0-9]/g, ''))}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            handleCodeSubmit();
+                                        }
+                                    }}
+                                    placeholder="e.g., 123456"
+                                    className="w-full px-4 py-3 bg-gray-700 text-white text-center text-lg font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-500"
+                                    maxLength={10}
+                                    autoFocus
+                                />
+                            </div>
+                            <button
+                                onClick={handleCodeSubmit}
+                                disabled={!inputCode.trim()}
+                                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold transition-colors"
+                            >
+                                Connect
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     const socket = usePokerSocket(roomCode, {
         onTogglePlay: () => setIsRunning((prev) => !prev),
@@ -92,14 +148,14 @@ function PokerController() {
 
     const handleAdjustTime = (delta: number) => {
         socket.emit('adjustTime', { room: roomCode, delta });
-    }
+    };
 
     useEffect(() => {
         presetsRef.current = presets;
         if (presets.length > 0 && !selectedPresetId) {
             setSelectedPresetId(presets[0].id);
         }
-    }, [presets]);
+    }, [presets, selectedPresetId]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
@@ -114,7 +170,21 @@ function PokerController() {
                 setShowQR={setShowQR}
             />
 
-            {selectedPreset && (
+            {loading ? (
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="text-2xl mb-4">Loading presets...</div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                    </div>
+                </div>
+            ) : presets.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="text-2xl mb-4">No presets available</div>
+                        <p className="text-gray-400">Create a preset in the settings</p>
+                    </div>
+                </div>
+            ) : selectedPreset ? (
                 <ControlPanel
                     isRunning={isRunning}
                     onTogglePlay={handleTogglePlay}
@@ -126,6 +196,12 @@ function PokerController() {
                     onPresetChange={handlePresetChange}
                     onAdjustTime={handleAdjustTime}
                 />
+            ) : (
+                <div className="flex-1 flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="text-2xl mb-4">Initializing...</div>
+                    </div>
+                </div>
             )}
 
             <SettingsModal

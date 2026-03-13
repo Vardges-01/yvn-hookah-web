@@ -61,12 +61,10 @@ function PokerDisplay() {
 
   useEffect(() => {
     if (presets.length > 0 && !selectedPresetId) {
-      if (selectedPresetId === "") {
-        setSelectedPresetId(presets[0].id);
-      }
+      setSelectedPresetId(presets[0].id);
       setTimeLeft(presets[0].levels[0].duration * 60);
     }
-  }, [presets]);
+  }, [presets, selectedPresetId, setTimeLeft]);
 
   const getPreviousLevel = () => {
     if (currentLevel > 0) {
@@ -89,23 +87,34 @@ function PokerDisplay() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden">
+      {/* Background Effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-black to-black opacity-30 pointer-events-none"></div>
+
       <Header
         isRunning={isRunning}
-        onTogglePlay={() => {}}
-        onReset={() => {}}
+        onTogglePlay={() => setIsRunning((prev) => !prev)}
+        onReset={() => {
+          setIsRunning(false);
+          setCurrentLevel(0);
+          setTimeLeft(levels[0]?.duration * 60 || 0);
+        }}
         onOpenSettings={() => {}}
         controllerCode={roomCode || ""}
         isController={false}
         showQR={showQR}
         setShowQR={setShowQR}
       />
-      <div className="text-center text-4xl font-bold mt-8">
-        <span className="border-2 py-2 px-10 rounded-xl">
-          {selectedPreset?.name}
-        </span>
+
+      {/* Preset Name - Compact Top Bar */}
+      <div className="relative px-8 py-2 border-b border-gray-800 flex-shrink-0">
+        <div className="text-sm text-gray-400 uppercase tracking-widest">Tournament</div>
+        <div className="text-xl font-black text-white">
+          {selectedPreset?.name || 'Loading...'}
+        </div>
       </div>
 
+      {/* Timer Component */}
       {selectedPreset && (
         <Timer
           timeLeft={timeLeft}
