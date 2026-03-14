@@ -8,7 +8,7 @@ const useSocket = () => {
 
   useEffect(() => {
     const socketConnection = io(SOCKET_URL,{
-  path: "/newapi/socket.io",
+  path: "/api/socket.io",
   transports: ["websocket","polling"],
   withCredentials: true
 });

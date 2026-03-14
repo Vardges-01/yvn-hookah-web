@@ -5,7 +5,7 @@ import AdminLogin from "../pages/admin/AdminLogin";
 import { supabase } from "../lib/supabase";
 import { useEffect, useState } from "react";
 import AdminDashboard from "../pages/admin/AdminDashboard";
-import Header from "../components/header/Header";
+// import Header from "../components/header/Header";
 import { ControllerSetup } from "../components/poker/ControllerSetup";
 import PokerDisplay from "../pages/poker/PokerDisplay";
 import PokerController from "../pages/poker/PokerController";
@@ -44,10 +44,10 @@ export default function Router() {
     return (
         <Routes>
             <Route path='/' element={<>
-                <Header
+                {/* <Header
                 // cartItemsCount={cartItemsCount}
                 // onCartClick={() => setIsCartOpen(!isCartOpen)}
-                />
+                /> */}
                 <ControllerSetup />
             </>
             } />
