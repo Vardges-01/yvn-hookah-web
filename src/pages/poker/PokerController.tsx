@@ -78,7 +78,7 @@ function PokerController() {
         );
     }
 
-    const socket = usePokerSocket(roomCode, {
+    const { socket, isConnected } = usePokerSocket(roomCode, {
         onTogglePlay: () => setIsRunning((prev) => !prev),
         onReset: () => {
             setCurrentLevel(0);
@@ -174,61 +174,73 @@ function PokerController() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
-            <Header
-                isRunning={isRunning}
-                selectedPreset={selectedPreset} 
-                onTogglePlay={handleTogglePlay}
-                onReset={handleReset}
-                onOpenSettings={() => setIsSettingsOpen(true)}
-                controllerCode={roomCode || ''}
-                isController={true}
-                showQR={showQR}
-                setShowQR={setShowQR}
-            />
-
-            {loading ? (
+            {!isConnected ? (
                 <div className="flex-1 flex items-center justify-center">
                     <div className="text-center">
-                        <div className="text-2xl mb-4">Loading presets...</div>
+                        <div className="text-4xl mb-4">🔌</div>
+                        <div className="text-2xl mb-4">Connecting to display...</div>
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
                     </div>
                 </div>
-            ) : presets.length === 0 ? (
-                <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                        <div className="text-2xl mb-4">No presets available</div>
-                        <p className="text-gray-400">Create a preset in the settings</p>
-                    </div>
-                </div>
-            ) : selectedPreset ? (
-                <ControlPanel
-                    isRunning={isRunning}
-                    onTogglePlay={handleTogglePlay}
-                    onReset={handleReset}
-                    currentLevel={currentLevel}
-                    blinds={selectedPreset.levels[currentLevel]}
-                    presets={presets}
-                    selectedPresetId={selectedPresetId}
-                    onPresetChange={handlePresetChange}
-                    onAdjustTime={handleAdjustTime}
-                    onAdjustLevel={handleAdjustLevel}
-                />
             ) : (
-                <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center">
-                        <div className="text-2xl mb-4">Initializing...</div>
-                    </div>
-                </div>
-            )}
+                <>
+                    <Header
+                        isRunning={isRunning}
+                        selectedPreset={selectedPreset} 
+                        onTogglePlay={handleTogglePlay}
+                        onReset={handleReset}
+                        onOpenSettings={() => setIsSettingsOpen(true)}
+                        controllerCode={roomCode || ''}
+                        isController={true}
+                        showQR={showQR}
+                        setShowQR={setShowQR}
+                    />
 
-            <SettingsModal
-                isOpen={isSettingsOpen}
-                onClose={() => setIsSettingsOpen(false)}
-                levels={selectedPreset?.levels || []}
-                onUpdateLevels={handleUpdateLevels}
-                onSaveNewPreset={savePreset}
-                presetName={selectedPreset?.name || ''}
-            />
+                    {loading ? (
+                        <div className="flex-1 flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="text-2xl mb-4">Loading presets...</div>
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                            </div>
+                        </div>
+                    ) : presets.length === 0 ? (
+                        <div className="flex-1 flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="text-2xl mb-4">No presets available</div>
+                                <p className="text-gray-400">Create a preset in the settings</p>
+                            </div>
+                        </div>
+                    ) : selectedPreset ? (
+                        <ControlPanel
+                            isRunning={isRunning}
+                            onTogglePlay={handleTogglePlay}
+                            onReset={handleReset}
+                            currentLevel={currentLevel}
+                            blinds={selectedPreset.levels[currentLevel]}
+                            presets={presets}
+                            selectedPresetId={selectedPresetId}
+                            onPresetChange={handlePresetChange}
+                            onAdjustTime={handleAdjustTime}
+                            onAdjustLevel={handleAdjustLevel}
+                        />
+                    ) : (
+                        <div className="flex-1 flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="text-2xl mb-4">Initializing...</div>
+                            </div>
+                        </div>
+                    )}
+
+                    <SettingsModal
+                        isOpen={isSettingsOpen}
+                        onClose={() => setIsSettingsOpen(false)}
+                        levels={selectedPreset?.levels || []}
+                        onUpdateLevels={handleUpdateLevels}
+                        onSaveNewPreset={savePreset}
+                        presetName={selectedPreset?.name || ''}
+                    />
+                </>
+            )}
         </div>
     );
 }

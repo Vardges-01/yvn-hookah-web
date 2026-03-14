@@ -15,7 +15,7 @@ export default function usePokerSocket(
     roomCode: string | null,
     options: UsePokerSocketOptions
 ) {
-    const socket = useSocket();
+    const { socket, isConnected } = useSocket();
 
     useEffect(() => {
         if (!socket) return;
@@ -51,24 +51,24 @@ export default function usePokerSocket(
         }
         
         if(options.onAdjustTime) {
-            socket.on('timerAdjusted', (delta: number) => {
-                options.onAdjustTime?.(delta);
+            socket.on('adjustTime', (data: { room: string; time: number }) => {
+                options.onAdjustTime?.(data.time);
             });
         }
 
         if(options.onAdjustLevel) {
-            socket.on('levelAdjusted', (delta: number) => {
-                options.onAdjustLevel?.(delta);
+            socket.on('adjustLevel', (data: { room: string; level: number }) => {
+                options.onAdjustLevel?.(data.level);
             });
         }
 
         return () => {
             socket.off('timerControl');
             socket.off('presetChanged');
-            socket.off('timerAdjusted');
-            socket.off('levelAdjusted');
+            socket.off('adjustTime');
+            socket.off('adjustLevel');
         };
     }, [socket, roomCode]);
 
-    return socket;
+    return { socket, isConnected };
 }

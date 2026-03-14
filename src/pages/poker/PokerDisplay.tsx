@@ -38,7 +38,7 @@ function PokerDisplay() {
     window.history.pushState({}, "", url.toString());
   };
 
-  usePokerSocket(roomCode, {
+  const { isConnected } = usePokerSocket(roomCode, {
     onRoomCreated: handleRoomCreated,
     onTogglePlay: () => setIsRunning((prev) => !prev),
     onReset: () => {
@@ -94,31 +94,43 @@ function PokerDisplay() {
       {/* Background Effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-black to-black opacity-30 pointer-events-none"></div>
 
-      <Header
-        isRunning={isRunning}
-        selectedPreset={selectedPreset}
-        onTogglePlay={() => setIsRunning((prev) => !prev)}
-        onReset={() => {
-          setIsRunning(false);
-          setCurrentLevel(0);
-          setTimeLeft(levels[0]?.duration * 60 || 0);
-        }}
-        onOpenSettings={() => { }}
-        controllerCode={roomCode || ""}
-        isController={false}
-        showQR={showQR}
-        setShowQR={setShowQR}
-      />
+      {!isConnected ? (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-4xl mb-4">🔌</div>
+            <div className="text-2xl mb-4">Connecting to server...</div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          </div>
+        </div>
+      ) : (
+        <>
+          <Header
+            isRunning={isRunning}
+            selectedPreset={selectedPreset}
+            onTogglePlay={() => setIsRunning((prev) => !prev)}
+            onReset={() => {
+              setIsRunning(false);
+              setCurrentLevel(0);
+              setTimeLeft(levels[0]?.duration * 60 || 0);
+            }}
+            onOpenSettings={() => { }}
+            controllerCode={roomCode || ""}
+            isController={false}
+            showQR={showQR}
+            setShowQR={setShowQR}
+          />
 
-      {/* Timer Component */}
-      {selectedPreset && (
-        <Timer
-          timeLeft={timeLeft}
-          currentLevel={currentLevel}
-          blinds={levels[currentLevel]}
-          previousLevel={getPreviousLevel()}
-          nextLevel={getNextLevel()}
-        />
+          {/* Timer Component */}
+          {selectedPreset && (
+            <Timer
+              timeLeft={timeLeft}
+              currentLevel={currentLevel}
+              blinds={levels[currentLevel]}
+              previousLevel={getPreviousLevel()}
+              nextLevel={getNextLevel()}
+            />
+          )}
+        </>
       )}
     </div>
   );
