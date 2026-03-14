@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { Menu } from "../pages/menu/Menu";
+// import { Menu } from "../pages/menu/Menu";
 import NotFound from "../pages/notFound/NotFound";
 import AdminLogin from "../pages/admin/AdminLogin";
 import { supabase } from "../lib/supabase";
@@ -48,7 +48,7 @@ export default function Router() {
                 // cartItemsCount={cartItemsCount}
                 // onCartClick={() => setIsCartOpen(!isCartOpen)}
                 />
-                <Menu />
+                <ControllerSetup />
             </>
             } />
             <Route path="/poker" element={<ControllerSetup />} />
