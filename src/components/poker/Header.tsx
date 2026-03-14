@@ -122,7 +122,7 @@ export function Header({
               Scan to control
             </div>
             <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentUrl + `/poker/?mode=controller&code=${controllerCode}`)}`}
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentUrl + `/poker/controller/?code=${controllerCode}`)}`}
               alt="QR Code"
               style={{ width: '20vmin', height: '20vmin' }}
               className="rounded-lg"
