@@ -5,6 +5,10 @@ import AdminLogin from "../pages/admin/AdminLogin";
 import { supabase } from "../lib/supabase";
 import { useEffect, useState } from "react";
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import Header from "../components/header/Header";
+import { ControllerSetup } from "../components/poker/ControllerSetup";
+import PokerDisplay from "../pages/poker/PokerDisplay";
+import PokerController from "../pages/poker/PokerController";
 
 function ProtectedRoute({ children }) {
     const [session, setSession] = useState(null);
@@ -39,8 +43,17 @@ function ProtectedRoute({ children }) {
 export default function Router() {
     return (
         <Routes>
-            <Route path='/' element={<Menu />} />
-            <Route path='/menu' element={<Menu />} />
+            <Route path='/' element={<>
+                <Header
+                // cartItemsCount={cartItemsCount}
+                // onCartClick={() => setIsCartOpen(!isCartOpen)}
+                />
+                <Menu />
+            </>
+            } />
+            <Route path="/poker" element={<ControllerSetup />} />
+            <Route path="/poker/display" element={<PokerDisplay />} />
+            <Route path="/poker/controller" element={<PokerController />} />
             <Route path='/admin' element={<AdminLogin />} />
             <Route
                 path="/admin/dashboard"

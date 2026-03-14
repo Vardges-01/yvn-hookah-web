@@ -28,6 +28,8 @@ jobs:
           node-version: '20'
       - name: 🔨 Build Project
         run: |
+          rm -rf node_modules package-lock.json
+          npm cache clean --force
           npm install --legacy-peer-deps
           npm run build
       - name: Archive production artifact
@@ -62,7 +64,9 @@ jobs:
           to: ${{ secrets.TG_CHAT_ID }}
           token: ${{ secrets.TG_TOKEN }}
           message: |
-            Deployment of ${{ github.repository }} to CPanel by ${{ github.actor }} completed.
-            Status: ${{ job.status }}
-            Commit message: ${{ github.event.commits[0].message }}
-            See changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            ✅ Deployment complete!
+            📦 Repo: ${{ github.repository }}
+            🌿 Branch: ${{ github.ref_name }}
+            👤 By: ${{ github.actor }}
+            📝 Commit: ${{ github.event.head_commit.message }}
+            🔗 View: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
