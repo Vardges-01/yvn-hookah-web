@@ -85,6 +85,7 @@ export function Header({
           </button>
           <button
             onClick={onOpenSettings}
+            hidden={true}
             disabled={isRunning}
             className="p-[1vmin] hover:bg-blue-700 hover:shadow-lg rounded-[0.5vw] disabled:opacity-50 transition-all duration-200 text-blue-300 hover:text-white"
           >

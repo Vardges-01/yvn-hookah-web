@@ -113,7 +113,7 @@ function PokerDisplay() {
               setCurrentLevel(0);
               setTimeLeft(levels[0]?.duration * 60 || 0);
             }}
-            onOpenSettings={() => { }}
+            onOpenSettings={() =>{}}
             controllerCode={roomCode || ""}
             isController={false}
             showQR={showQR}
