@@ -87,6 +87,17 @@ function PokerController() {
         onPresetChanged: (presetId) => {
             setSelectedPresetId(presetId);
             setCurrentLevel(0);
+        },
+        onAdjustTime: (delta: number) => {
+            console.log("Adjusting time by:", delta);
+            // Time adjustment is handled on the display side
+        },
+        onAdjustLevel: (delta: number) => {
+            setCurrentLevel((prev) => {
+                const newLevel = prev + delta;
+                const maxLevel = selectedPreset?.levels.length ? selectedPreset.levels.length - 1 : 0;
+                return Math.max(0, Math.min(newLevel, maxLevel));
+            });
         }
     });
 
@@ -146,8 +157,12 @@ function PokerController() {
         }
     };
 
-    const handleAdjustTime = (delta: number) => {
-        socket.emit('adjustTime', { room: roomCode, delta });
+    const handleAdjustTime = (time: number) => {
+        socket.emit('adjustTime', { room: roomCode, time });
+    };
+
+    const handleAdjustLevel = (level: number) => {
+        socket.emit('adjustLevel', { room: roomCode, level });
     };
 
     useEffect(() => {
@@ -161,6 +176,7 @@ function PokerController() {
         <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex flex-col">
             <Header
                 isRunning={isRunning}
+                selectedPreset={selectedPreset} 
                 onTogglePlay={handleTogglePlay}
                 onReset={handleReset}
                 onOpenSettings={() => setIsSettingsOpen(true)}
@@ -195,6 +211,7 @@ function PokerController() {
                     selectedPresetId={selectedPresetId}
                     onPresetChange={handlePresetChange}
                     onAdjustTime={handleAdjustTime}
+                    onAdjustLevel={handleAdjustLevel}
                 />
             ) : (
                 <div className="flex-1 flex items-center justify-center">

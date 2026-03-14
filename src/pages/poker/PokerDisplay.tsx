@@ -13,7 +13,7 @@ function PokerDisplay() {
 
   const { presets, reload } = useBlindPresets();
   const [selectedPresetId, setSelectedPresetId] = useState<string>("");
-//   const [lastSelectedPresetId, setLastSelectedPresetId] = useState<string>("");
+  //   const [lastSelectedPresetId, setLastSelectedPresetId] = useState<string>("");
   const [currentLevel, setCurrentLevel] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [showQR, setShowQR] = useState(false);
@@ -44,7 +44,7 @@ function PokerDisplay() {
     onReset: () => {
       setIsRunning(false);
       setCurrentLevel(0);
-      setTimeLeft(levels[0]?.duration * 60 || 0);
+      reload();
     },
     onPresetChanged: (presetId) => {
       setSelectedPresetId(presetId);
@@ -57,6 +57,9 @@ function PokerDisplay() {
       console.log("Adjusting time by:", delta);
       setTimeLeft((prev) => Math.max(prev + delta, 0));
     },
+    onAdjustLevel: (level) => {
+      setCurrentLevel((prev) => Math.max(prev + level, 0));
+    }
   });
 
   useEffect(() => {
@@ -93,26 +96,19 @@ function PokerDisplay() {
 
       <Header
         isRunning={isRunning}
+        selectedPreset={selectedPreset}
         onTogglePlay={() => setIsRunning((prev) => !prev)}
         onReset={() => {
           setIsRunning(false);
           setCurrentLevel(0);
           setTimeLeft(levels[0]?.duration * 60 || 0);
         }}
-        onOpenSettings={() => {}}
+        onOpenSettings={() => { }}
         controllerCode={roomCode || ""}
         isController={false}
         showQR={showQR}
         setShowQR={setShowQR}
       />
-
-      {/* Preset Name - Compact Top Bar */}
-      <div className="relative px-8 py-2 border-b border-gray-800 flex-shrink-0">
-        <div className="text-sm text-gray-400 uppercase tracking-widest">Tournament</div>
-        <div className="text-xl font-black text-white">
-          {selectedPreset?.name || 'Loading...'}
-        </div>
-      </div>
 
       {/* Timer Component */}
       {selectedPreset && (

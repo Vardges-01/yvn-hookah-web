@@ -1,8 +1,9 @@
 import { Play, Pause, RotateCcw, Settings, Smartphone } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
+// import { QRCodeSVG } from "qrcode.react";
 
 interface HeaderProps {
   isRunning: boolean;
+  selectedPreset: any;
   onTogglePlay: () => void;
   onReset: () => void;
   onOpenSettings: () => void;
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export function Header({
   isRunning,
+  selectedPreset,
   onTogglePlay,
   onReset,
   onOpenSettings,
@@ -25,85 +27,107 @@ export function Header({
   const currentUrl = window.location.origin;
 
   return (
-    <div className="bg-gradient-to-r from-black via-blue-950 to-black p-4 flex justify-between items-center border-b border-blue-800 shadow-lg">
-      <div className="flex justify-between items-center">
+    <div className="bg-gradient-to-r from-black via-blue-950 to-black flex justify-between items-center gap-[2vw] border-b border-blue-800 shadow-lg relative z-20">
+      <div className="flex items-center gap-[1.5vw]">
+        {/* Добавил фоллбек-иконку на случай, если картинка не загрузится (удобно для превью) */}
         <img
           src="/poker-logo.png"
           alt="Yerevan Poker Tournament"
-          className="h-14"
+          className="h-[5vmin] sm:block pl-[2vw]"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+            (e.target as any).nextSibling.style.display = 'flex';
+          }}
         />
-        <span className="text-xl text-white uppercase tracking-widest pl-4 font-black">
-          Yerevan Poker Tournament
+        <span className="text-[2.5vmin] hidden sm:block text-white uppercase tracking-widest font-black">
+          Poker Tournament
         </span>
       </div>
+
+      {/* Preset Name - Responsive Top Bar */}
+      <div className="text-center">
+        <div className="text-[1.5vmin] text-gray-400 uppercase tracking-widest font-bold">
+          Tournament
+        </div>
+        <div className="text-[2.5vmin] font-black text-white">
+          {selectedPreset?.name || 'Loading...'}
+        </div>
+      </div>
+    
+
       {isController && (
-        <div className="flex gap-4 items-center">
-          <span className="text-base content-center bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2 rounded-lg font-bold text-white shadow-lg">
+        <div className="flex gap-[1vw] items-center w-auto">
+          <span className="text-[2vmin] content-center bg-gradient-to-r from-blue-600 to-blue-700 px-[1.5vw] py-[0.8vh] rounded-[0.5vw] font-bold text-white shadow-lg">
             Code: {controllerCode}
           </span>
           <button
             onClick={onOpenSettings}
             disabled={isRunning}
-            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg disabled:opacity-50 transition-all duration-200 text-blue-300 hover:text-white"
+            className="p-[1vmin] hover:bg-blue-700 hover:shadow-lg rounded-[0.5vw] disabled:opacity-50 transition-all duration-200 text-blue-300 hover:text-white"
           >
-            <Settings className="w-7 h-7" />
+            <Settings className="w-[3vmin] h-[3vmin]" />
           </button>
         </div>
       )}
+
       {!isController && (
-        <div className="flex gap-3 items-center">
-          <span className="text-base content-center bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2 rounded-lg font-bold text-white shadow-lg">
+        <div className="flex gap-[1vw] items-center w-auto flex-nowrap">
+          <span className="text-[2vmin] content-center bg-gradient-to-r from-blue-600 to-blue-700 px-[1.5vw] py-[0.8vh] rounded-[0.5vw] font-bold text-white shadow-lg">
             Code: {controllerCode}
           </span>
           <button
-            onClick={() => setShowQR((prev) => !prev)}
-            className="flex p-2 gap-2 hover:bg-blue-700 hover:shadow-lg rounded-lg transition-all duration-200 text-blue-300 hover:text-white"
+            onClick={() => setShowQR((prev: any) => !prev)}
+            className="flex items-center gap-[0.5vw] p-[1vmin] hover:bg-blue-700 hover:shadow-lg rounded-[0.5vw] transition-all duration-200 text-blue-300 hover:text-white"
             title="Control from phone"
           >
-            <Smartphone className="w-6 h-6" />
-            <div className="font-semibold hidden sm:block">Connect</div>
+            <Smartphone className="w-[3vmin] h-[3vmin]" />
+            <div className="text-[1.5vmin] font-semibold hidden md:block">QR</div>
           </button>
           <button
             onClick={onOpenSettings}
             disabled={isRunning}
-            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg disabled:opacity-50 transition-all duration-200 text-blue-300 hover:text-white"
+            className="p-[1vmin] hover:bg-blue-700 hover:shadow-lg rounded-[0.5vw] disabled:opacity-50 transition-all duration-200 text-blue-300 hover:text-white"
           >
-            <Settings className="w-7 h-7" />
+            <Settings className="w-[3vmin] h-[3vmin]" />
           </button>
           <button
             onClick={onTogglePlay}
-            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg transition-all duration-200 text-emerald-400 hover:text-emerald-300"
+            className="p-[1vmin] hover:bg-blue-700 hover:shadow-lg rounded-[0.5vw] transition-all duration-200 text-emerald-400 hover:text-emerald-300"
           >
             {isRunning ? (
-              <Pause className="w-7 h-7" />
+              <Pause className="w-[3vmin] h-[3vmin]" />
             ) : (
-              <Play className="w-7 h-7" />
+              <Play className="w-[3vmin] h-[3vmin]" />
             )}
           </button>
           <button
             onClick={onReset}
-            className="p-2 hover:bg-blue-700 hover:shadow-lg rounded-lg transition-all duration-200 text-red-400 hover:text-red-300"
+            className="p-[1vmin] hover:bg-blue-700 hover:shadow-lg rounded-[0.5vw] transition-all duration-200 text-red-400 hover:text-red-300"
           >
-            <RotateCcw className="w-7 h-7" />
+            <RotateCcw className="w-[3vmin] h-[3vmin]" />
           </button>
         </div>
       )}
+
       {showQR && (
         <div
-          onClick={() => setShowQR((prev) => !prev)}
-          className=" bg-slate-900 bg-opacity-80 fixed inset-0 flex items-center justify-center z-50"
+          onClick={() => setShowQR((prev: any) => !prev)}
+          className="bg-slate-900 bg-opacity-80 fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm"
         >
-          <div className="flex flex-col bg-white p-4 rounded-lg shadow-lg text-center items-center gap-3">
-            <div className="text-black text-lg mb-2 font-semibold">
-              Scan to control from phone
+          <div
+            className="flex flex-col bg-white p-[3vmin] rounded-[1vw] shadow-2xl text-center items-center gap-[2vmin]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-black text-[2.5vmin] font-semibold">
+              Scan to control
             </div>
-            <QRCodeSVG
-              value={
-                currentUrl + `/poker/?mode=controller&code=${controllerCode}`
-              }
-              size={200}
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(currentUrl + `/poker/?mode=controller&code=${controllerCode}`)}`}
+              alt="QR Code"
+              style={{ width: '20vmin', height: '20vmin' }}
+              className="rounded-lg"
             />
-            <div className="text-black text-lg mb-2 font-bold">
+            <div className="text-black text-[3vmin] font-bold">
               CODE: {controllerCode}
             </div>
           </div>

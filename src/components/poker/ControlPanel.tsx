@@ -10,6 +10,7 @@ interface ControlPanelProps {
   selectedPresetId?: string;
   onPresetChange?: (presetId: string) => void;
   onAdjustTime?: (delta: number) => void;
+  onAdjustLevel?: (delta: number) => void;
 }
 
 const ControlPanel = ({
@@ -21,7 +22,8 @@ const ControlPanel = ({
   presets,
   selectedPresetId,
   onPresetChange,
-  onAdjustTime
+  onAdjustTime,
+  onAdjustLevel
 }: ControlPanelProps) => {
   return (
     <div className="flex-1 flex flex-col items-center justify-start gap-8 p-8">
@@ -50,9 +52,7 @@ const ControlPanel = ({
           </button>
           <button
             className="w-20 h-20 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors"
-            onClick={() =>
-              console.log("-1 lvl")
-            }
+            onClick={() => onAdjustLevel?.(-1)}
           >
             -1 lvl
           </button>
@@ -76,10 +76,7 @@ const ControlPanel = ({
           </button>
           <button
             className="w-20 h-20 flex items-center justify-center bg-gray-700 hover:bg-gray-600 rounded-full shadow-lg transition-colors"
-            onClick={() =>
-              /*socket.emit('adjustTime', { room: roomCode, delta: 60 })*/
-              console.log("-1 min")
-            }
+            onClick={() => onAdjustLevel?.(1)}
           >
             +1 lvl
           </button>
