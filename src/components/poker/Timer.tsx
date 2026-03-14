@@ -40,7 +40,7 @@ export function Timer({
         {/* Level */}
         <div className="text-center">
           <div className="text-[1.5vw] text-gray-400 uppercase tracking-widest mb-[0.5vw] font-bold">Level</div>
-          <div className="text-[8vw] font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-300 leading-none">
+          <div className="text-[6vw] font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-300 leading-none">
             {currentLevel + 1}
           </div>
         </div>

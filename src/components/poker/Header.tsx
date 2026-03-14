@@ -27,13 +27,13 @@ export function Header({
   const currentUrl = window.location.origin;
 
   return (
-    <div className="bg-gradient-to-r from-black via-blue-950 to-black flex justify-between items-center gap-[2vw] border-b border-blue-800 shadow-lg relative z-20">
-      <div className="flex items-center gap-[1.5vw]">
-        {/* Добавил фоллбек-иконку на случай, если картинка не загрузится (удобно для превью) */}
+    <div className="bg-gradient-to-r from-black via-blue-950 to-black flex items-center gap-[2vw] border-b border-blue-800 shadow-lg relative z-20 px-[2vw]">
+      {/* Left side - Logo */}
+      <div className="flex items-center gap-[1.5vw] flex-1">
         <img
           src="/poker-logo.png"
           alt="Yerevan Poker Tournament"
-          className="h-[5vmin] sm:block pl-[2vw]"
+          className="h-[5vmin] sm:block"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = 'none';
             (e.target as any).nextSibling.style.display = 'flex';
@@ -44,8 +44,8 @@ export function Header({
         </span>
       </div>
 
-      {/* Preset Name - Responsive Top Bar */}
-      <div className="text-center">
+      {/* Center - Tournament Name */}
+      <div className="flex-1 text-center">
         <div className="text-[1.5vmin] text-gray-400 uppercase tracking-widest font-bold">
           Tournament
         </div>
@@ -53,10 +53,10 @@ export function Header({
           {selectedPreset?.name || 'Loading...'}
         </div>
       </div>
-    
 
+      {/* Right side - Controls */}
       {isController && (
-        <div className="flex gap-[1vw] items-center w-auto">
+        <div className="flex gap-[1vw] items-center flex-1 justify-end">
           <span className="text-[2vmin] content-center bg-gradient-to-r from-blue-600 to-blue-700 px-[1.5vw] py-[0.8vh] rounded-[0.5vw] font-bold text-white shadow-lg">
             Code: {controllerCode}
           </span>
@@ -71,7 +71,7 @@ export function Header({
       )}
 
       {!isController && (
-        <div className="flex gap-[1vw] items-center w-auto flex-nowrap">
+        <div className="flex gap-[1vw] items-center flex-1 justify-end flex-nowrap">
           <span className="text-[2vmin] content-center bg-gradient-to-r from-blue-600 to-blue-700 px-[1.5vw] py-[0.8vh] rounded-[0.5vw] font-bold text-white shadow-lg">
             Code: {controllerCode}
           </span>

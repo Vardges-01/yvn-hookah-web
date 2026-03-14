@@ -49,25 +49,26 @@ export default function usePokerSocket(
                 options.onPresetChanged?.(presetId);
             });
         }
-        
-        if(options.onAdjustTime) {
-            socket.on('adjustTime', (data: { room: string; time: number }) => {
-                options.onAdjustTime?.(data.time);
+
+        if (options.onAdjustTime) {
+            socket.on('timerAdjusted', (delta: number) => {
+                options.onAdjustTime?.(delta);
             });
         }
 
-        if(options.onAdjustLevel) {
-            socket.on('adjustLevel', (data: { room: string; level: number }) => {
-                options.onAdjustLevel?.(data.level);
+        if (options.onAdjustLevel) {
+            socket.on('levelAdjusted', (delta: number) => {
+                options.onAdjustLevel?.(delta);
             });
         }
 
         return () => {
             socket.off('timerControl');
             socket.off('presetChanged');
-            socket.off('adjustTime');
-            socket.off('adjustLevel');
-        };
+            socket.off('timerAdjusted');
+            socket.off('levelAdjusted');
+        }
+
     }, [socket, roomCode]);
 
     return { socket, isConnected };
